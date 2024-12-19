@@ -7,12 +7,8 @@ urlpatterns = [
     path('MdiaryList/', views.MdiaryList, name="MdiaryList"),
     path('diaryWrite/', views.diaryWrite, name="diaryWrite"),
     path('diaryMake/', views.diaryMake, name="diaryMake"),
-<<<<<<< HEAD
     path('diary_view/<int:cno>/', views.diary_view, name="diary_view"),
     path('dmodify/<int:cno>/', views.dmodify, name='dmodify'),  # 글 수정
-=======
-    path('diaryView/', views.diaryView, name="diaryView"),
->>>>>>> 6a4eebe54a590c8fcedadb88b1311e536eb29c66
     path('CdiaryList/', views.CdiaryList, name="CdiaryList"), # 생성한 다이어리 리스트
     path('JdiaryList/', views.JdiaryList, name="JdiaryList") # 생성한 다이어리 리스트
 ]
