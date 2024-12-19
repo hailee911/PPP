@@ -45,10 +45,10 @@
     <ul>
       <a href="/main/index/"><li class="menu_item">우리 가족 이야기</li></a>
       <a href="/diary/diaryHome/"><li class="menu_item active">다이어리</li></a>
-      <a href="#"><li class="menu_item">감정 돌아보기</li></a>
-      <a href="#"><li class="menu_item">우리가족</li></a>
-      <a href="#"><li class="menu_item">캘린더</li></a>
-      <a href="#"><li class="menu_item">알려드려요</li></a>
+      <a href="/emotion/main/"><li class="menu_item">감정 돌아보기</li></a>
+      <a href="/family1/fam/"><li class="menu_item">우리가족</li></a>
+      <a href="/calendar1/cal/"><li class="menu_item">캘린더</li></a>
+      <a href="/customer/"><li class="menu_item">알려드려요</li></a>
     </ul>
   </nav>
   <!-- logout -->
@@ -86,7 +86,7 @@
     {% if diaries %}
     {% for diary in diaries %}
     <div class="list_group">
-      <a href="/diary/diaryView/">
+      <a href="/diary/diary_view/{{diary.cno}}/?pageNum={{forloop.revcounter}}">
         <div class="wrap_cont">
           <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{diary.ctitle}}</span>
           <p class="desc_cont">

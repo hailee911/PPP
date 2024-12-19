@@ -75,7 +75,7 @@
     {% if jdiary %}
     {% for j in jdiary %}
     <div class="list_group">
-      <a href="/diary/diaryView/">
+      <a href="/diary/diary_view/{{j.cno}}/?pageNum={{forloop.revcounter}}">
         <div class="wrap_cont">
           <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{j.ctitle}}</span>
           <p class="desc_cont">

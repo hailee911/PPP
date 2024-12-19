@@ -5,10 +5,10 @@ app_name = "diary"
 urlpatterns = [
     path('diaryHome/', views.diaryHome, name="diaryHome"),
     path('MdiaryList/', views.MdiaryList, name="MdiaryList"),
-    path('JdiaryList/', views.JdiaryList, name="JdiaryList"),
-    path('CdiaryList/', views.CdiaryList, name="CdiaryList"),
     path('diaryWrite/', views.diaryWrite, name="diaryWrite"),
     path('diaryMake/', views.diaryMake, name="diaryMake"),
-    path('diaryView/', views.diaryView, name="diaryView"),
-    path('update-title/', views.update_diary_title, name='update_diary_title'),
+    path('diary_view/<int:cno>/', views.diary_view, name="diary_view"),
+    path('dmodify/<int:cno>/', views.dmodify, name='dmodify'),  # 글 수정
+    path('CdiaryList/', views.CdiaryList, name="CdiaryList"), # 생성한 다이어리 리스트
+    path('JdiaryList/', views.JdiaryList, name="JdiaryList") # 생성한 다이어리 리스트
 ]

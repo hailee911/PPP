@@ -144,6 +144,10 @@ def diaryMake(request):
 #   return render(request,'MdiaryList.html', context)
 
 
+## 내 다이어리 목록
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def MdiaryList(request):
 		if request.method == "GET":        
 				# 세션에 저장된 ID 가져오기
@@ -278,13 +282,66 @@ def diaryWrite(request):
 
 
 # 다이어리 view 추후 업데이트 >>
-def diaryView(request):
-		id = request.session.get('session_id')
-		member = Member.objects.filter(id=id)
-		qs = Content.objects.filter(member=member[0])
-		context = {"content":qs}
-		return render(request,'diary_view.html',context)
+def diary_view(request,cno):
+		# mdiary = Content.objects.filter(cno=cno)
+		
+		current_post = Content.objects.filter(cno=cno)
+		if not current_post:
+				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
 
+		# 이전글: 현재 글보다 cno가 작은 값 중에서 가장 최신 1개
+		previous_post = Content.objects.filter(cno__lt=cno).order_by('-cno').first()
+
+		# 다음글: 현재 글보다 cno가 큰 값 중에서 가장 오래된 1개
+		next_post = Content.objects.filter(cno__gt=cno).order_by('cno').first()
+
+		# 현재 페이지 번호 가져오기
+		pageNum = int(request.GET.get('pageNum', 1))
+
+		session_id = request.session.get('session_id')
+		member = Member.objects.filter(id=session_id).first()
+		mdiary = MdiaryBoard.objects.filter(id=member).first()
+
+		context = {
+				'cont': current_post[0],
+				'previous_post': previous_post,  # 이전글 1개
+				'next_post': next_post,          # 다음글 1개
+				'pageNum': pageNum,
+				'mdiary':mdiary
+		}
+		return render(request,'diary_view.html',context,)
+
+## 글수정페이지, 글수정 저장
+def dmodify(request,cno):
+	print("게시글 번호 : ",cno)
+	if request.method == "GET":
+		id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
+		qs = Content.objects.filter(cno=cno)
+		user = Member.objects.filter(id=id)
+		created_d = qs[0].group_diary
+		joined_d = qs[0].group_diary
+		user = Member.objects.filter(id=id)
+		created_group = user[0].created_group
+		joined_group = user[0].joined_group
+		context = {"diary":qs[0],"created_group":created_group,"created_d":created_d,"joined_group":joined_group,"joined_d":joined_d}
+		print("sssssssssssssssssss",context)
+		return render(request,'dmodify.html',context)
+	
+	else:  #post
+		# cno = request.POST.get("cno")
+		ctitle = request.POST.get("title")
+		ccontent = request.POST.get("content")
+		cdate = request.POST.get("date")
+		image = request.POST.get("image")
+		qs = Content.objects.get(cno=cno)
+		qs.ctitle = ctitle
+		qs.ccontent = ccontent
+		qs.cdate = cdate
+		if image:
+			qs.image = image
+		qs.save()
+
+		return render(request,'dmodify.html',{'u_msg':cno})
 
 ## join 일기장 보기
 def JdiaryList(request):
