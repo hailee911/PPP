@@ -57,7 +57,8 @@ class Content(models.Model):
   group_diary  = models.ManyToManyField(GroupDiary, blank=True)
   # 공용다이어리 db 만들면 추후 업데이트
   image = models.ImageField(upload_to='diary_images/', blank=True, null=True)  # 이미지
-  # 개인다이어리 db
+
+   # 개인다이어리 db
   mdiary = models.ForeignKey(MdiaryBoard, on_delete=models.CASCADE, null=True, blank=True)
   def __str__(self):
     group_diaries = ", ".join([str(diary) for diary in self.group_diary.all()])
