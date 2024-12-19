@@ -61,8 +61,8 @@ class Content(models.Model):
 
    # 개인다이어리 db
   mdiary = models.ForeignKey(MdiaryBoard, on_delete=models.CASCADE, null=True, blank=True)
-
   def __str__(self):
-    return f"{self.cno},{self.member.id},{self.ctitle},{self.ccontent},{self.cdate},{self.group_diary},{self.member.nicName}"
+    group_diaries = ", ".join([str(diary) for diary in self.group_diary.all()])
+    return f"{self.cno}, {self.member.id}, {self.ctitle}, {self.ccontent}, {self.cdate}, [{group_diaries}], {self.member.nicName}"
 
 
