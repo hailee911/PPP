@@ -7,68 +7,10 @@
   <link rel="stylesheet" href="{% static '/css/diary/Mdiary_list.css'%}">
   <link rel="stylesheet" href="{% static '/css/home/main.css'%}">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
-  <title>내 다이어리 목록</title> 
+  <title>내 다이어리 목록</title>
 </head>
-
 <!-- 공통 상단좌측메뉴 -->
 <script>
-  // 다이어리 수정 버튼 클릭 시 수정 모드로 전환
-  function enableEdit() {
-    let titleInput = document.getElementById('diaryTitleInput');
-    titleInput.disabled = false;  // 수정 가능하도록 활성화
-    titleInput.focus();  // 커서를 입력란에 위치시킴
-    
-    // 수정 완료 버튼 생성
-    let saveBtn = document.createElement('button');
-    saveBtn.innerHTML = '수정 완료';
-    saveBtn.onclick = saveTitle;
-    
-    // 기존에 있던 수정 완료 버튼이 있다면 삭제 후 새로운 버튼을 추가
-    let existingSaveBtn = document.getElementById('saveBtn');
-    if (existingSaveBtn) {
-      existingSaveBtn.remove();
-    }
-    
-    titleInput.parentNode.appendChild(saveBtn);
-    saveBtn.id = 'saveBtn';
-  }
-
-  // 수정 완료 버튼 클릭 시 서버로 변경 사항 전송
-  function saveTitle() {
-    let newTitle = document.getElementById('diaryTitleInput').value;
-    let currentTitle = "{{ mdiary.mtitle }}"; // 템플릿에서 현재 제목 값 가져오기
-
-    if (newTitle !== currentTitle) {
-      // 수정된 제목이 기존 제목과 다르면 서버로 전송
-      fetch('/diary/update-title/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'  // CSRF 토큰 추가
-        },
-        body: JSON.stringify({ title: newTitle })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('다이어리가 수정되었습니다.');
-          document.getElementById('diaryTitleInput').disabled = true;  // 입력창 비활성화
-        } else {
-          alert('수정 중 오류가 발생했습니다.');
-        }
-      });
-    }
-  }
-
-  // 취소 시 confirm 창 표시 후 수정 취소
-  function cancelEdit() {
-    if (confirm('수정을 취소하시겠습니까?')) {
-      document.getElementById('diaryTitleInput').value = "{{mdiary.mtitle}}";  // 원래 제목으로 되돌리기
-      document.getElementById('diaryTitleInput').disabled = true;  // 입력창 비활성화
-    }
-  }
-
-
   $(function() {
     // GNB 클릭
     $('#menu ul li').on('click', function() {
@@ -87,12 +29,9 @@
     <li><a href="#"><img src="/static/images/home/bell_off_icon.png" alt=""></a></li>
     <li><a href="#">마이페이지</a></li>
   </ul>
-
 </div>
-
 <!-- 좌측 gnb -->
 <div id="gnb">
-
   <!-- 프로필 -->
   <div id="user_profile">
     <div id="pimg">
@@ -101,7 +40,6 @@
     <p id="uName">김용준</p>
     <p id="uEmail">kyjoon0105@gmail.com</p>
   </div>
-
   <!-- Nav -->
   <nav id="menu">
     <ul>
@@ -113,61 +51,53 @@
       <a href="#"><li class="menu_item">알려드려요</li></a>
     </ul>
   </nav>
-
   <!-- logout -->
   <div id="logout">
     <a href="#"><span>로그아웃</span></a>
   </div>
-  
 </div>
 <!-- 공통 상단좌측메뉴 -->
-
-
 <!-- 다이어리 리스트 -->
 <div id="main_area">
-
   <div id="title_area">
     <p id="infoTit">
-      {% if mdiary %}
-        {% comment %} {{mdiary.mtitle}} {% endcomment %}
-        <input type="text" id="diaryTitleInput" value="{{mdiary.mtitle}}" disabled>
+      {% if created_group %}
+        {{created_group.gtitle}}
       {% else %}
-      <input type="text" id="diaryTitleInput" value="내 다이어리 이름을 설정해 주세요." disabled>
+        내 다이어리 이름을 설정해 주세요.
       {% endif %}
-      <span><div id="modify_del_slide_1">
-        <button type="button" id="addBtn">
-        <img src="/static/images/customer/addBtn.png" alt="" id="openModal_1" style="cursor: pointer;">
-        </button></span>
-      <span>
-        <button type="button" class="wBtn"><a href="/diary/diaryWrite/"><img id="writeBtn" src="/static/images/diary/writeBtn.png" alt=""></a></button>
-        <div class="sub_menu_modal" id="sub_menu_modal_1">
-          <div id="sub_menu_content">
-            <button id="diaryEditBtn" onclick="enableEdit()">다이어리 수정</button>
-            {% comment %} <button id="diaryDeleteBtn">다이어리 삭제</button> {% endcomment %}
+        <span><div id="modify_del_slide_1">
+          <button type="button" id="addBtn">
+          <img src="/static/images/customer/addBtn.png" alt="" id="openModal_1" style="cursor: pointer;">
+          </button></span>
+        <span>
+          <button type="button" class="wBtn"><a href="/diary/diaryWrite/"><img id="writeBtn" src="/static/images/diary/writeBtn.png" alt=""></a></button>
+          <div class="sub_menu_modal" id="sub_menu_modal_1">
+            <div id="sub_menu_content">
+              <button id="diaryEditBtn">다이어리 수정</button>
+              <button id="diaryDeleteBtn">다이어리 삭제</button>
+            </div>
           </div>
-        </div>
-      </div></span>
-  </p>
-    
-    <p id="dateTit">{{mdiary.mdate|date:"Y년 m월 d부터 씀"}}</p>
+        </div></span>
+    </p>
+    <p id="dateTit">{{created_group.created_at|date:"Y년 m월 d부터 씀"}}</p>
   </div>
-  
   <div id="list_area">
-    {% if content %}
-    {% for c in content %}
+    {% if diaries %}
+    {% for diary in diaries %}
     <div class="list_group">
       <a href="/diary/diaryView/">
         <div class="wrap_cont">
-          <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{c.ctitle}}<span class="img"><img src="/static/images/diary/lock.png" alt=""></span></span>
+          <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{diary.ctitle}}</span>
           <p class="desc_cont">
-            <span class="diaryTit">{{mdiary.mtitle}}</span><span class="space"> | </span>
-            <span class="list_txt">{{c.ccontent}}
+            <span class="diaryTit">{{diary.member.name}}</span><span class="space"> | </span>
+            <span class="list_txt">{{diary.ccontent}}
             </span>
           </p>
         </div>
         <dl class="list_post_info">
           <dd class="txt_g">
-            <span>{{ c.cdate|date:"Y.m.d" }}</span><span class="space"> | </span>
+            <span>{{ diary.cdate|date:"Y.m.d" }}</span><span class="space"> | </span>
             <span>댓글</span><span>01</span><span class="space"> | </span>
             <span>좋아요</span><span>02</span>
           </dd>
@@ -176,12 +106,10 @@
     </div>
     {% endfor %}
     {% else %}
-    일기를 작성해봅시다!🙌
+    공유된 일기가 아직 없어요! 내 다이어리에서 일기를 작성해서 공유해봐요! :연필2:
     {% endif %}
     </div>
-
   </div>
-
   <ul class="page_num">
     <!-- 이전페이지 확인 -->
     {% if MdiaryList.has_previous %}
@@ -191,7 +119,6 @@
       <li class="first"></li>
       <li class="prev"></li>
     {% endif %}
-
     <!-- 순차적 페이지 넘버링 -->
     {% for page in MdiaryList.paginator.page_range %}
       {% if page == MdiaryList.number %}
@@ -201,7 +128,6 @@
     {% comment %} <li class="nowNum"><a href="#">1</a></li> {% endcomment %}
       {% endif %}
     {% endfor %}
-
     <!-- 이후페이지 확인 -->
     {% if MdiaryList.has_next %}
       <a href="?npage={{diary.next_page_number}}"><li class="next"><img src="/static/images/diary/right.png" alt=""></li></a>
@@ -210,10 +136,8 @@
       <li class="next"></li>
       <li class="last"></li>
     {% endif %}
-
   </ul>
 </div>
-
 <script>
   // 첫 번째 모달 열기/닫기
   document.getElementById('openModal_1').addEventListener('click', function() {
@@ -221,13 +145,10 @@
     console.log('첫 번째 모달 클릭됨');
     modal.classList.toggle('open'); // open 클래스가 있으면 제거, 없으면 추가
   });
-
-  
   document.getElementById('back_click').addEventListener('click', function() {
     console.log('목록 클릭됨');
     location.href='/customer/noticelist/'
   });
 </script>
-
 </body>
 </html>
