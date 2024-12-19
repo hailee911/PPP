@@ -14,7 +14,6 @@ def main(request):
   return render(request, 'main.html')
 
 def logout(request):
-  request.session.clear()
   response = redirect('/')
   response.delete_cookie('sessionid')  # 세션 쿠키 삭제
   return response

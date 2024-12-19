@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'admin1',
     'diary',
     'mypage',
-    'comment',
+    # 'comment',
     'calendar1',
     'family1',
 ]
