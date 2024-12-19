@@ -14,7 +14,6 @@ a{text-decoration: none; color:inherit}
 #title_area{
   width:1457px; 
   height:140px; 
-  margin-bottom: 60px;
 }
 
 #infoTit{
@@ -24,22 +23,29 @@ a{text-decoration: none; color:inherit}
   padding-top:30px;
 }
 
-.wBtn{
-  margin-left:800px;
-  border:none;
-  background: none;
-}
 
 #addBtn{
   border:none;
   background:none;
   margin-right:150px;
   display:flex;
+  /* position: relative; */
+  padding-left: 860px;
+}
+
+.wBtn{
+  margin-left:800px;
+  border:none;
+  background: none;
+}
+
+#writeBtn{
+  margin-right: 500px;
+  margin-top: 15px;
 }
 
 /* 모달 */
  /* 이미지와 슬라이드 창 컨테이너 */
- #modify_del_slide_1, #modify_del_slide_2 {
  #modify_del_slide_1, #modify_del_slide_2 {
   position: relative; /* 슬라이드 창 위치를 이 요소를 기준으로 설정 */
   position: absolute;
@@ -52,7 +58,7 @@ a{text-decoration: none; color:inherit}
   display: none; /* 기본적으로 숨김 */
   position: absolute; /* 이미지의 바로 옆에 표시되도록 설정 */
   /*left: 100%;  이미지 바로 오른쪽에 위치 */
-  bottom: -30px; /* 이미지 바로 오른쪽에 위치 */
+  left: 0; /* 이미지 바로 오른쪽에 위치 */
   width: 60px; /* 모달의 크기를 버튼 크기에 맞춰 설정 */
   background-color: white;
   color: rgb(87, 78, 78);
