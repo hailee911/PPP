@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from loginpage.models import Member
 from diary.models import Content
-from customer.models import NoticeBoard
 from django.http import JsonResponse,HttpResponse
 from django.db.models import Q
 
@@ -11,9 +10,7 @@ def landing(request):
   return render(request,'landing.html')
 
 def main(request):
-  qs_post = NoticeBoard.objects.filter(category=2).order_by('-bno')
-  context = {'post_lists':qs_post}
-  return render(request, 'main.html', context)
+  return render(request, 'main.html')
 
 def logout(request):
   request.session.clear()
