@@ -44,9 +44,7 @@ class ContentAdmin(admin.ModelAdmin):
     
     def member_nicName(self, obj):
         return obj.member.nicName if obj.member else None
-    
     # member_nicName으로 정렬 가능하게 설정
     member_nicName.admin_order_field = 'member__nicName'
-    
     # 컬럼 제목 설정
     member_nicName.short_description = 'Member Nickname'
