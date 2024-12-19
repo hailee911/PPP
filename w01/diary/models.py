@@ -54,7 +54,6 @@ class Content(models.Model):
   ctitle = models.CharField(max_length=1000)
   ccontent = models.TextField(null=True)
   cdate = models.DateTimeField(default=timezone.now)  # 기본값을 오늘 날짜로 설정
-  # cdate = models.DateTimeField(auto_now=True)  # 기본값을 오늘 날짜로 설정
   group_diary  = models.ManyToManyField(GroupDiary, blank=True)
   # 공용다이어리 db 만들면 추후 업데이트
   image = models.ImageField(upload_to='diary_images/', blank=True, null=True)  # 이미지

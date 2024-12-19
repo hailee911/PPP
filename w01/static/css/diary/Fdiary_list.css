@@ -1,65 +1,72 @@
-/* 기본틀 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+*{margin:0; padding:0; 
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;}
+
+a{text-decoration: none; color:inherit}
+
+#main_area{
+  width:1391px; 
+  height:2252px;
+  margin-left:284px;
 }
 
-a{
-  text-decoration: none;
-  color:inherit;
+#title_area{
+  width:1457px; 
+  height:168px; 
+  margin-top:48px; 
+  margin-bottom: 60px;
 }
 
-body, html {
-  height: 100%;
-}
-
-
-table, tr, td{
-  border-collapse: collapse;
-  color: #333;
-  font-size: 14px;
-}
-
-/* container */
-#container{
-  width: 100%;
-  min-height: 100vh; /* 화면 높이와 동일하게 설정 */
-  padding: 60px 300px 0 300px;
-}
-
-#notice_title_area{
-  width:100%; 
-  margin-bottom: 50px;
-}
-
-#noticeTit{
+#infoTit{
+  font-size:36px; 
   font-weight:610; 
+  padding-bottom:20px; 
+  padding-top:30px;
 }
 
-#noticeTit2{
-  font-size:16px; 
+.addBtn{
+  padding-left:1183px;
+}
+
+#dateTit{
+  font-size:15px; 
   color:#797979; 
   margin-bottom:29px;
 }
 
-#notice_list_area{
-  width:100%; 
-  margin-bottom: 40px;
+#fMem{
+  width:229px;
+  height:26px;
+  border: 1px solid #D9D9D9;
 }
 
-.notice_list_group{
-  width:100%; 
+#fName{
+  font-size: 14px;
+  font-weight: 400;
+  color: #797979;
+  padding: 4px 9px 4px 9px;
+}
+
+#list_area{
+  width:1457px; 
+  height:1989px;
+}
+
+.list_group{
+  width:1052px; 
   height:193px;  
   padding-top:40px; 
   border-bottom:1px solid #EEEEEE; 
   box-sizing:border-box;
 }
 
-.notice_wrap_cont{
-  width:100%; 
+.wrap_cont{
+  width:1052px; 
   height:76px;
+}
+
+.diaryTit{
+  font-size:15px; 
+  font-weight:400;
 }
 
 .desc_cont{
@@ -87,18 +94,18 @@ table, tr, td{
   padding-right:18px;
 }
 
-#Nname{
+#Mname{
   font-size: 16px;
   font-weight: 400;
   color: #797979;
-  margin-left: auto;
+  padding-left: 480px;
 }
 
 .img{
   margin-left:12px;
 }
 
-.notice_wrap_cont .space{
+.wrap_cont .space{
   margin:0 10px; 
   color:#666666;
 }
