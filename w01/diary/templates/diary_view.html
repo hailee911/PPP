@@ -49,30 +49,18 @@
     <!-- Nav -->
     <nav id="menu">
       <ul>
-        <a href="#">
-          <li class="menu_item">우리 가족 이야기</li>
-        </a>
-        <a href="#">
-          <li class="menu_item active">다이어리</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">감정 돌아보기</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">우리가족</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">캘린더</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">알려드려요</li>
-        </a>
+        <a href="/main/index/"><li class="menu_item">우리 가족 이야기</li></a>
+        <a href="/diary/diaryHome/"><li class="menu_item active">다이어리</li></a>
+        <a href="/emotion/main/"><li class="menu_item">감정 돌아보기</li></a>
+        <a href="/family1/fam/"><li class="menu_item">우리가족</li></a>
+        <a href="/calendar1/cal/"><li class="menu_item">캘린더</li></a>
+        <a href="/customer/"><li class="menu_item">알려드려요</li></a>
       </ul>
     </nav>
 
     <!-- logout -->
     <div id="logout">
-      <a href="#"><span>로그아웃</span></a>
+      <a href="/main/logout/"><span>로그아웃</span></a>
     </div>
 
   </div>
@@ -118,12 +106,14 @@
         </tr>
         {% if content %}
         {% for c in content %}
+        
         <tr>
           <td>{{c.cno}}</td>
           <td><a href="">{{c.ctitle}}</a></td>
           <td>{{c.member.nicName}}</td>
           <td>{{c.cdate|date:"y.m.d"}}</td>
         </tr>
+        
         {% endfor %}
         {% endif %}
 
@@ -138,15 +128,9 @@
             <td>{{ previous_post.member.name }}</td>
             <td>{{ previous_post.cdate|date:"Y.m.d" }}</td>
         </tr>
+        
         {% endif %}
-
-        <!-- 현재 글 -->
-        {% comment %} <tr>
-            <td>현재글</td>
-            <td>{{ cont.ctitle }}</td>
-            <td>{{ cont.member.name }}</td>
-            <td>{{ cont.cdate|date:"Y.m.d" }}</td>
-        </tr> {% endcomment %}
+        
 
         <!-- 다음 글 -->
         {% if next_post %}
@@ -159,6 +143,9 @@
             <td>{{ next_post.cdate|date:"Y.m.d" }}</td>
         </tr>
         {% endif %}
+        {% comment %} <tr>
+          <td><a href="/diary/{{diary}}_view/">목록</a></td>
+        </tr> {% endcomment %}
 
 
 

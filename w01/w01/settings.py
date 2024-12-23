@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # 'comment',
     'calendar1',
     'family1',
+    'notifications',
 ]
 
 MIDDLEWARE = [
