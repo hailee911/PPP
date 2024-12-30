@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from diary.models import GroupDiary
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from loginpage.models import Img
+# from loginpage.models import Img
 
 
 @csrf_exempt  # 테스트 시 CSRF 검증 해제 (프로덕션 환경에서는 사용 금지)
@@ -146,7 +146,7 @@ def fam(request):
 
     # 그룹 존재 여부 확인
     has_group = bool(created_group or joined_group)
-    qb = Img.objects.get(id=id)
+    # qb = Img.objects.get(id=id)
     # 컨텍스트 데이터 구성
     context = {
         'user':user,
@@ -157,7 +157,7 @@ def fam(request):
         'joined_group_name': joined_group_name,
         'joined_group_members': joined_group_members,
         'created_group_members': created_group_members,
-        "qb":qb,
+        # "qb":qb,
     }
 
     return render(request, 'fam.html', context)

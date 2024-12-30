@@ -145,9 +145,9 @@ def diaryMake(request):
 
 
 ## 내 다이어리 목록
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 
-@login_required
+# @login_required
 def MdiaryList(request):
 		if request.method == "GET":        
 				# 세션에 저장된 ID 가져오기
