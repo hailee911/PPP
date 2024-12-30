@@ -106,12 +106,14 @@
         </tr>
         {% if content %}
         {% for c in content %}
+        
         <tr>
           <td>{{c.cno}}</td>
           <td><a href="">{{c.ctitle}}</a></td>
           <td>{{c.member.nicName}}</td>
           <td>{{c.cdate|date:"y.m.d"}}</td>
         </tr>
+        
         {% endfor %}
         {% endif %}
 
@@ -126,15 +128,9 @@
             <td>{{ previous_post.member.name }}</td>
             <td>{{ previous_post.cdate|date:"Y.m.d" }}</td>
         </tr>
+        
         {% endif %}
-
-        <!-- 현재 글 -->
-        {% comment %} <tr>
-            <td>현재글</td>
-            <td>{{ cont.ctitle }}</td>
-            <td>{{ cont.member.name }}</td>
-            <td>{{ cont.cdate|date:"Y.m.d" }}</td>
-        </tr> {% endcomment %}
+        
 
         <!-- 다음 글 -->
         {% if next_post %}
@@ -147,6 +143,9 @@
             <td>{{ next_post.cdate|date:"Y.m.d" }}</td>
         </tr>
         {% endif %}
+        {% comment %} <tr>
+          <td><a href="/diary/{{diary}}_view/">목록</a></td>
+        </tr> {% endcomment %}
 
 
 

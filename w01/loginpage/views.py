@@ -1,6 +1,5 @@
 from django.shortcuts import render,redirect
 from loginpage.models import Member
-from diary.models import MdiaryBoard
 from django.contrib import messages
 import smtplib
 import random
@@ -64,11 +63,6 @@ def join03(request,id,pw,mail):
       gender=request.POST.get('gender'),
     )
     print("정보2 : ",qs)
-
-    # 회원가입시 자동으로 개인 다이어리 생성
-    MdiaryBoard.objects.create(id=qs)
-
-
     return redirect('loginpage:join04')  # 성공 페이지로 이동
   else:
     print('join03 확인 : ',id,pw,mail)

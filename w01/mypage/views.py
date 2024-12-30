@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from loginpage.models import Member
-from loginpage.models import Img
+# from loginpage.models import Img
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 

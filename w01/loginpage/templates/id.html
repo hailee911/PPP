@@ -24,7 +24,7 @@
           <div class="id1_error-message" id="id1_errorMessage3">메일을 입력해주세요.</div>
         </div>
         <dd>
-          <input type="text" id="id1_mail_id" class="id_input" name="email"  placeholder="    이메일" value="{{ email|default:'' }}">
+          <input type="text" id="id1_mail_id" class="id_input" name="email"  placeholder="이메일" value="{{ email|default:'' }}">
           <select id="id_select" name="em2">
             <option value="naver.com" {% if em2 == 'naver.com' %}selected{% endif %}>naver.com</option>
             <option value="gmail.com" {% if em2 == 'gmail.com' %}selected{% endif %}>gmail.com</option>
@@ -38,20 +38,20 @@
       <form method="POST" name='idFrm'>
         {% csrf_token %}
         <label for="mail" id="label_code">인증코드</label>
-        <input type="text" id="input_code" name="verification_code" placeholder="    인증코드를 입력하세요.">
+        <input type="text" id="input_code" name="verification_code" placeholder="인증코드를 입력하세요.">
         <div class="id1_span1">
           <label for="name" id="label_name">이름</label>
           <div class="id1_error-message" id="id1_errorMessage1">이름을 입력해주세요.</div>
         </div>
         <div id="id_input_id">
-          <input type="text" id="id1_id" name="name" class="id_input" placeholder="    이름을 입력해주세요." value="{{ name|default:'' }}">
+          <input type="text" id="id1_id" name="name" class="id_input" placeholder="이름을 입력해주세요." value="{{ name|default:'' }}">
         </div>
         <div class="id1_span1">
           <label for="birthday" id="label_bir">생년월일</label>
           <div class="id1_error-message" id="id1_errorMessage2">생년월일을 입력해주세요.</div>
         </div>
         <div id="id_input_bir">
-          <input type="text" id="id1_birthday" name="birthday" class="id_input" placeholder="    예) 1999-11-22" value="{{ birthday|default:'' }}">
+          <input type="text" id="id1_birthday" name="birthday" class="id_input" placeholder="예) 1999-11-22" value="{{ birthday|default:'' }}">
         </div>
         {% if messages %}
         {% for message in messages %}

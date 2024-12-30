@@ -284,32 +284,150 @@ def diaryWrite(request):
 # 다이어리 view 추후 업데이트 >>
 def diary_view(request,cno):
 		# mdiary = Content.objects.filter(cno=cno)
+		session_id = request.session.get('session_id')
+		member = Member.objects.filter(id=session_id).first()
+		mdiary = MdiaryBoard.objects.filter(id=member).first()
 		
 		current_post = Content.objects.filter(cno=cno)
 		if not current_post:
 				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
 
-		# 이전글: 현재 글보다 cno가 작은 값 중에서 가장 최신 1개
-		previous_post = Content.objects.filter(cno__lt=cno).order_by('-cno').first()
+		# # 이전글: 현재 글보다 cno가 작은 값 중에서 가장 최신 1개
+		# my_qs = Content.objects.filter(member=session_id).order_by('-cdate')
+		# # 현재 게시글의 cno 값이 주어진 경우
+		# current_diary = Content.objects.get(cno=cno)
+		# current_cdate = current_diary.cdate
+
+		# # my_qs에서 current_cno보다 작은 cno를 가진 게시글 필터링
+		# previous_post = next((post for post in my_qs if post.cdate < current_cdate), None)
+		# next_post = next((post for post in my_qs if post.cdate > current_cdate), None)
+
 
 		# 다음글: 현재 글보다 cno가 큰 값 중에서 가장 오래된 1개
-		next_post = Content.objects.filter(cno__gt=cno).order_by('cno').first()
+		# next_post = Content.objects.filter(cno__gt=cno).order_by('cno').first()
+
+		# 현재 게시글 정보 가져오기
+		current_diary = Content.objects.get(cno=cno)
+
+		# 이전 글 (현재 게시글 날짜보다 작은 가장 가까운 글)
+		previous_post = (
+				Content.objects.filter(member=session_id, cdate__lt=current_diary.cdate)
+				.order_by('-cdate')
+				.first()
+		)
+
+		# 다음 글 (현재 게시글 날짜보다 큰 가장 가까운 글)
+		next_post = (
+				Content.objects.filter(member=session_id, cdate__gt=current_diary.cdate)
+				.order_by('cdate')
+				.first()
+		)
 
 		# 현재 페이지 번호 가져오기
 		pageNum = int(request.GET.get('pageNum', 1))
 
-		session_id = request.session.get('session_id')
-		member = Member.objects.filter(id=session_id).first()
-		mdiary = MdiaryBoard.objects.filter(id=member).first()
 
 		context = {
 				'cont': current_post[0],
 				'previous_post': previous_post,  # 이전글 1개
 				'next_post': next_post,          # 다음글 1개
 				'pageNum': pageNum,
-				'mdiary':mdiary
+				'mdiary':mdiary,
+				'diary':'Mdiary',
 		}
 		return render(request,'diary_view.html',context,)
+
+
+## 가족다이어리 view
+def Cdiary_view(request,cno):
+		# mdiary = Content.objects.filter(cno=cno)
+		session_id = request.session.get('session_id')
+		member = Member.objects.filter(id=session_id).first()
+		Cdiary = GroupDiary.objects.filter(member=member).first()
+		
+		current_post = Content.objects.filter(cno=cno)
+		if not current_post:
+				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
+
+			# 현재 게시글 정보 가져오기
+		current_diary = Content.objects.get(cno=cno)
+
+		# 현재 그룹 다이어리 가져오기
+		current_Cdiaryname = member.created_group
+		current_gno = current_Cdiaryname.gno
+
+		# 그 그룹의 일기 가져오기
+		joingroup = GroupDiary.objects.filter(gno=current_gno).first()
+		# join다이어리의 Content 가져오기
+		contents = joingroup.content_set.all().order_by("-cdate")  # 해당 GroupDiary에 연결된 모든 Content 객체 가져오기
+
+
+		# 이전 글 (현재 게시글 날짜보다 작은 가장 가까운 글)
+		# previous_post = next((post for post in contents if post.cdate < current_diary.cdate), None)
+		previous_post = contents.filter(cdate__lt=current_diary.cdate).order_by('-cdate').first()
+		next_post = contents.filter(cdate__gt=current_diary.cdate).order_by('cdate').first()
+		
+
+		# 현재 페이지 번호 가져오기
+		pageNum = int(request.GET.get('pageNum', 1))
+
+
+		context = {
+				'cont': current_post[0],
+				'previous_post': previous_post,  # 이전글 1개
+				'next_post': next_post,          # 다음글 1개
+				'pageNum': pageNum,
+				'mdiary':Cdiary,
+				'diary':'Cdiary',
+		}
+		return render(request,'diary_view.html',context,)
+
+## 가족다이어리 view
+def Jdiary_view(request,cno):
+		# mdiary = Content.objects.filter(cno=cno)
+		session_id = request.session.get('session_id')
+		member = Member.objects.filter(id=session_id).first()
+		Jdiary = GroupDiary.objects.filter(member=member).first()
+		
+		current_post = Content.objects.filter(cno=cno)
+		if not current_post:
+				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
+
+			# 현재 게시글 정보 가져오기
+		current_diary = Content.objects.get(cno=cno)
+
+		# 현재 그룹 다이어리 가져오기
+		current_Jdiaryname = member.joined_group
+		current_gno = current_Jdiaryname.gno
+
+		# 그 그룹의 일기 가져오기
+		joingroup = GroupDiary.objects.filter(gno=current_gno).first()
+		# join다이어리의 Content 가져오기
+		contents = joingroup.content_set.all().order_by("-cdate")  # 해당 GroupDiary에 연결된 모든 Content 객체 가져오기
+
+
+		# 이전 글 (현재 게시글 날짜보다 작은 가장 가까운 글)
+		# previous_post = next((post for post in contents if post.cdate < current_diary.cdate), None)
+		previous_post = contents.filter(cdate__lt=current_diary.cdate).order_by('-cdate').first()
+		next_post = contents.filter(cdate__gt=current_diary.cdate).order_by('cdate').first()
+		
+
+		# 현재 페이지 번호 가져오기
+		pageNum = int(request.GET.get('pageNum', 1))
+
+
+		context = {
+				'cont': current_post[0],
+				'previous_post': previous_post,  # 이전글 1개
+				'next_post': next_post,          # 다음글 1개
+				'pageNum': pageNum,
+				'mdiary':Jdiary,
+				'diary':'Jdiary',
+		}
+		return render(request,'diary_view.html',context,)
+
+
+
 
 ## 글수정페이지, 글수정 저장
 def dmodify(request,cno):

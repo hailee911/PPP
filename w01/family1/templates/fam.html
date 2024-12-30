@@ -137,19 +137,26 @@
     $(document).on('click', '.list_deleteBtn', function() {
       const memberId = $(this).data('member-id'); // 버튼에서 member_id 가져오기
       
+      // 삭제 확인 메시지 추가 (옵션)
+      if (!confirm('정말 이 멤버를 삭제하시겠습니까?')) {
+        return;  // 사용자가 취소 버튼을 클릭하면 요청을 보내지 않음
+      }
+    
       // 삭제 요청 보내기
       $.ajax({
-        url: '/family1/delete_member/' + memberId + '/',  // delete_member 뷰의 URL
+        url: '/family1/delete_member/' + memberId + '/',
         type: 'POST',
         data: {
-          'csrfmiddlewaretoken': '{{ csrf_token }}'  // CSRF 토큰 추가
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(response) {
           alert('멤버가 삭제되었습니다.');
           location.reload();  // 삭제 후 페이지 새로 고침
         },
         error: function(xhr, errmsg, err) {
-          alert('삭제에 실패했습니다.',);
+          console.log('memberId:', memberId);
+          console.log('XHR response:', xhr.responseText);  // 서버에서 받은 전체 응답 내용 출력
+          alert('삭제에 실패했습니다. 오류: ' + errmsg);  // 메시지 출력
         }
       });
     });
@@ -163,13 +170,15 @@
         alert("아이디를 입력하세요.");
         return;
       }
-  
+      // CSRF 토큰 가져오기
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
       $.ajax({
         url: '/family1/add_member/',  // 추가할 뷰의 URL
         type: 'POST',
+        headers: { 'X-CSRFToken': csrftoken }, // CSRF 토큰 추가
         data: {
-          'csrfmiddlewaretoken': '{{ csrf_token }}',  // CSRF 토큰
-          'member_id': memberId  // 입력된 멤버 ID
+          'member_id': memberId
         },
         success: function(response) {
           if (response.success) {
@@ -205,10 +214,10 @@
     <!-- 프로필 -->
     <div id="user_profile">
       <div id="pimg">
-        <img src="{% static 'images/family1/default_profile.png'%}" alt="" />
+        <img src="{{ qb.img.url }}" alt="" />
       </div>
-      <p id="uName">김용준</p>
-      <p id="uEmail">kyjoon0105@gmail.com</p>
+      <p id="uName">{{user.name}}</p>
+      <p id="uEmail">{{user.mail}}</p>
     </div>
 
     <!-- Nav -->
@@ -225,7 +234,7 @@
 
     <!-- logout -->
     <div id="logout">
-      <a href="#"><span>로그아웃</span></a>
+      <a href="/main/logout/"><span>로그아웃</span></a>
     </div>
   </div>
 
@@ -371,55 +380,58 @@
       <div id="non" class="{% if has_group %}hide{% else %}show{% endif %}">가족이 존재하지 않습니다. 가족을 추가하세요.<br>
       <a href="/diary/diaryMake/" id="hidden_a">가족 추가하러 가기</a>
       </div>
-
-      <div id ="back_cover">
-
-      
-        <div id="main_me" class="{% if created_group %}show{% else %}hide{% endif %}">
+      <form method="post">
+        {% csrf_token %}
+        <div id ="back_cover">
           
-          <div id="small_title1" class="small_title">{{created_group_name}}</div>
-          <button type='button' id='king'>편집</button>
-
-          <div class="small_list" id="small_list1">
-            {% if joined_group_members %}
+          
+          
+          <div id="main_me" class="{% if created_group %}show{% else %}hide{% endif %}">
+            
+            <div id="small_title1" class="small_title">{{created_group_name}}</div>
+            <button type='button' id='king'>편집</button>
+            
+            <div class="small_list" id="small_list1">
+              {% if joined_group_members %}
               {% for member in joined_group_members%}
-                <div class="small_list_1">
-                  <div class="small_img"><img src="{% static 'images/family1/default_profile.png'%}" alt="" /></div>
-                  <div class="summ">
-                    <div class="small_name">{{member.name}}</div>
-                    <div class="small_bir">{{member.birthday}}</div>
-                    <button type=button class="list_deleteBtn" data-member-id="{{ member.id }}">삭제</button>
-                  </div>
+              <div class="small_list_1">
+                <div class="small_img"><img src="{% static 'images/family1/default_profile.png'%}" alt="" /></div>
+                <div class="summ">
+                  <div class="small_name">{{member.member.name}}</div>
+                  <div class="small_bir">{{member.member.birthday}}</div>
+                  <button type=button class="list_deleteBtn" data-member-id="{{ member.member.id }}">삭제</button>
                 </div>
+              </div>
               {% endfor %}
-            {% endif %}
-
-
-          </div>
-          <div id="add_Btn_input">
-            <input type="text" id="add_input" placeholder="  추가할 맴버의 아이디를 검색하세요.">
-          </div>
-          <div id="add_Btn_toggle">
-            <button type="button" id="add_Bton">맴버추가하기</button>
-          </div>
-          <div class="small_toggle" id='small_toggle_id1'>
-            <button id="toggleButton1">더보기</button>
-          </div>
+              {% endif %}
+              
+              
+            </div>
+            <div id="add_Btn_input">
+              <input type="text" name = "add_member1" id="add_input" placeholder="  추가할 맴버의 아이디를 검색하세요.">
+            </div>
+            <div id="add_Btn_toggle">
+              <button type="button" id="add_Bton">맴버추가하기</button>
+            </div>
+            <div class="small_toggle" id='small_toggle_id1'>
+              <button id="toggleButton1">더보기</button>
+            </div>
+          </form>
 
         </div>
         <div id="main_me2" class="{% if joined_group %}show{% else %}hide{% endif %}">
           <div id="small_title1" class="small_title">{{joined_group_name}}</div>
           <div class="small_list" id="small_list2">
             {% if created_group_members %}
-            {% for member in created_group_members %}
-            <div class="small_list_2">
-              <div class="small_img"><img src="{% static 'images/family1/default_profile.png'%}" alt="" /></div>
-              <div class="summ">
-                <div class="small_name">{{member.name}}</div>
-                <div class="small_bir">{{member.birthday}}</div>
+              {% for member in created_group_members %}
+              <div class="small_list_2">
+                <div class="small_img"><img src="{% static 'images/family1/default_profile.png'%}" alt="" /></div>
+                <div class="summ">
+                  <div class="small_name">{{member.member.name}}</div>
+                  <div class="small_bir">{{member.member.birthday}}</div>
+                </div>
               </div>
-            </div>
-            {% endfor %}
+              {% endfor %}
             {% endif %}
           </div>
           
