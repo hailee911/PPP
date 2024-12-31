@@ -75,15 +75,18 @@
         <span>{{cont.cdate}}</span>
         <span>{{cont.member.name}}</span>
       </div>
+      {% if is_mdiary_list %}
       <div id="modify_del_slide_1">
         <img src="/static/images/diary/addBtn.png" alt="" id="openModal_1" style="cursor: pointer;"> <!-- 커서 포인터 추가 -->
         <div class="sub_menu_modal" id="sub_menu_modal_1">
           <div id="sub_menu_content">
             <a href="/diary/dmodify/{{cont.cno}}"><button id="editButton_1">수정</button></a>
-            <button id="deleteButton_1">삭제</button>
+            {% comment %} <button id="deleteButton_1">삭제</button> {% endcomment %}
+            <button id="deleteButton_1" data-cno="{{ cont.cno }}">삭제</button>
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
     <div id="diary_content">
       {% if cont.image %}
@@ -104,7 +107,7 @@
         <tr>
           <th colspan="4">{{mdiary.mtitle}}</th>
         </tr>
-        {% if content %}
+        {% comment %} {% if content %}
         {% for c in content %}
         
         <tr>
@@ -115,12 +118,12 @@
         </tr>
         
         {% endfor %}
-        {% endif %}
+        {% endif %} {% endcomment %}
 
 
         <!-- 이전 글 -->
         {% if previous_post %}
-        <tr>
+        <tr class="postList">
             <td>이전글</td>
             <td>
                 <a href="/diary/diary_view/{{ previous_post.cno }}">{{ previous_post.ctitle }}</a>
@@ -134,7 +137,7 @@
 
         <!-- 다음 글 -->
         {% if next_post %}
-        <tr>
+        <tr class="postList">
             <td>다음글</td>
             <td>
                 <a href="/diary/diary_view/{{ next_post.cno }}">{{ next_post.ctitle }}</a>
@@ -143,9 +146,9 @@
             <td>{{ next_post.cdate|date:"Y.m.d" }}</td>
         </tr>
         {% endif %}
-        {% comment %} <tr>
-          <td><a href="/diary/{{diary}}_view/">목록</a></td>
-        </tr> {% endcomment %}
+        <tr id="listBtn">
+          <td colspan="4"><a href="/diary/{{diary}}List/">목록으로</a></td>
+        </tr> 
 
 
 
@@ -226,6 +229,41 @@
     document.getElementById('like_click').addEventListener('click', function() {
       console.log('하트 클릭됨');
       this.src = this.src.includes('/static/images/diary/Favorite_light.png') ? '/static/images/diary/Favorite_duotone.png' : '/static/images/diary/Favorite_light.png';
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // 삭제 버튼 클릭 이벤트 위임
+      document.body.addEventListener('click', function (event) {
+        if (event.target.id === 'deleteButton_1') { // 삭제 버튼인지 확인
+          const cno = event.target.dataset.cno; // 게시글 번호 가져오기 (data-* 속성 활용)
+  
+          if (confirm('정말 삭제하시겠습니까?')) { // 확인창 띄우기
+            fetch(`/diary/ddelete/${cno}/`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // CSRF 토큰 추가
+              },
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === 'success') {
+                  alert(data.message); // 성공 메시지
+                  window.location.href = '/diary/MdiaryList/'; // 목록 페이지로 이동
+                } else {
+                  alert(data.message); // 실패 메시지
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('삭제에 실패했습니다. 다시 시도해주세요.');
+              });
+          } else {
+            console.log('삭제 취소');
+          }
+        }
+      });
     });
 
 

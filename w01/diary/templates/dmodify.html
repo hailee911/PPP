@@ -138,23 +138,32 @@
       <p>공유 가능한 다이어리가 없습니다.</p>
       {% endif %} -->
 
-      {% if created_d or joined_d %}
+      {% comment %} {% if created_d or joined_d %} {% endcomment %}
       <div class="form-group">
           <label>공유</label><br>
-          {% if created_d %}
-          <label id="fdiary">
+          {% if created_group != None %}
+            {% comment %} {% if diary.group_diary[0] != "" %} {% endcomment %}
+            <label id="fdiary">
+              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" checked >
               {{ created_group.gName }}
-              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}">
-          </label>
+            </label>
+            {% comment %} {% else %} {% endcomment %}
+            <label id="fdiary">
+              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" checked >
+              {{ created_group.gName }}
+            </label>
+            {% comment %} {% endif %} {% endcomment %}
+          {% else %}
+          <label id="fdiary"></label>
           {% endif %}
-          {% if joined_group %}
+          {% if joined_group != "" %}
           <label id="fdiary">
-              {{ joined_group.gName }}
-              <input type="checkbox" id="share" name="diary_idj" value="{{ joined_group.gno }}">
+            <input type="checkbox" id="share" name="diary_idj" value="{{ joined_group.gno }}">
+            {{ joined_group.gName }}
           </label>
           {% endif %}
       </div>
-      {% endif %}
+      {% comment %} {% endif %} {% endcomment %}
 
       <button type="submit" onclick='saveBtn(event)' class="save">저장</button>
       <button type="button" class="cancel" onclick="confirmCancel()">취소</button>
@@ -195,7 +204,7 @@
   function confirmCancel() {
     var confirmAction = confirm("정말 취소하시겠습니까?");
     if (confirmAction) {
-      window.location.href = '/diary/dmodify/{{diary.cno}}';  // 취소 후 이동
+      window.location.href = '/diary/diary_view/{{diary.cno}}';  // 취소 후 이동
     }
   }
 
