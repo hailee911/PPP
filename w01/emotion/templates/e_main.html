@@ -15,7 +15,7 @@
   {% block profill-block%}
   <div id="user_profile">
     <div id="pimg">
-      <img src="/static/images/home/default_profile.png" alt="">
+      <img src="{{ my_img.img.url }}" alt="">
     </div>
     <p id="uName" >{{mem_info.name}}</p>
     <p id="uEmail">{{mem_info.mail}}</p>

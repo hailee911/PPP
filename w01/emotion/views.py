@@ -9,6 +9,8 @@ from loginpage.models import Member
 from diary.models import Content
 from emotion.models import EmotionScore
 from comment.models import Comment
+from mypage.models import Img
+
 
 # AI PYTHON
 import os
@@ -147,6 +149,7 @@ def main(request):
   # 프로필 가져오기 
   id = request.session['session_id']
   mem = Member.objects.filter(id = id )
+  qb = Img.objects.filter(id=id).first()
   name = mem[0].name
   # 날짜 가져오기
   current_date = datetime.today()
@@ -173,7 +176,8 @@ def main(request):
       'week':week_number, 
       'name':name[1:],
       'total_value':total_value,
-      'total_value2':total_value2
+      'total_value2':total_value2,
+      'my_img':qb,
       }
   return render(request, 'e_main.html', context)
 

@@ -69,13 +69,13 @@
       }
 
       .profile_upload {
-        width: 92px;
+        width: 60px;
         height: 21px;
         font-size: 14px;
         font-weight: 400;
         line-height: 150%;
         margin-top: 20px;
-        margin-left: 40px;
+        margin-left: 20px;
         text-decoration: underline;
         cursor: pointer;
       }
@@ -263,6 +263,19 @@
         font-weight: 400;
         line-height: 150%;
       }
+      #profile_img{
+        width: 60px;
+        height: 21px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 150%;
+        margin-top: 10px;
+        margin-left: 10px;
+        text-decoration: underline;
+        cursor: pointer;
+        background-color:white;
+        border: none;
+      }
     </style>
 
     <script>
@@ -326,6 +339,28 @@
           }
         });
       });
+
+      function showButton() {
+        document.getElementById('profile-upload-div').style.display = 'none';
+        document.getElementById('profile_img').style.display = 'inline-block';
+        
+        // 파일 입력을 클릭하여 파일 선택을 가능하게 합니다
+        document.getElementById('file').click();
+      }
+    
+      // 파일이 선택된 후 상태 변경
+      function toggleDisplay() {
+        // 파일이 선택되었을 때만 동작
+        if (document.getElementById('file').files.length > 0) {
+          // button이 나타나면 div는 숨겨지고, 반대로 파일이 선택되지 않으면 버튼은 숨겨짐
+          document.getElementById('profile-upload-div').style.display = 'none';
+          document.getElementById('profile_img').style.display = 'inline-block';
+        } else {
+          document.getElementById('profile-upload-div').style.display = 'inline-block';
+          document.getElementById('profile_img').style.display = 'none';
+        }
+      }
+
     </script>
   </head>
 
@@ -384,18 +419,21 @@
       </div>
 
       <!-- 프로필 사진 변경 버튼 아직 사진 저장은 안됨. -->
-      <form method="POST" enctype="multipart/form-data">
+      <form method="POST" enctype="multipart/form-data" action="{% url 'mypage:profile_upload' %}">
         {% csrf_token %}
       <label for="file">
-        <div class="profile_upload">프로필 사진 변경</div>
+        <div class="profile_upload"id="profile-upload-div" onclick="showButton()">사진 변경</div>
         <input
           type="file"
           name="file"
           id="file"
           accept="image/*"
-          onchange="loadFile(this)"
+          onchange="loadFile(this); toggleDisplay()"
+          style="display: none;" 
         />
       </label>
+      <button type="submit" id="profile_img" style="display: none;">사진 저장</button>
+      </form>
       <!-- 회원 정보 -->
       <table>
         <tr>

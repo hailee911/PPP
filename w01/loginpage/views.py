@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from loginpage.models import Member
+from mypage.models import Img
 from django.contrib import messages
 import smtplib
 import random
@@ -61,6 +62,9 @@ def join03(request,id,pw,mail):
       name=request.POST.get('name'),
       birthday=request.POST.get('date'),
       gender=request.POST.get('gender'),
+    )
+    Img.objects.create(
+      id=id
     )
     print("정보2 : ",qs)
     return redirect('loginpage:join04')  # 성공 페이지로 이동

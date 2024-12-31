@@ -193,7 +193,6 @@
             <img src="/static/images/diary/addBtn.png" alt="" class="openModal" data-comment-id="{{ comment.id }}" style="cursor: pointer;">
             <div class="c_modal" id="c_modal_{{ comment.id }}">
               <div id="sub_menu_content">
-                <button id="editButton" data-comment-id="{{ comment.id }}">수정</button>
                 <button id="deleteButton" data-comment-id="{{ comment.id }}">삭제</button>
               </div>
             </div>
@@ -203,9 +202,7 @@
         <div class="comment_content">
           <span>{{ comment.text }}</span>
         </div>
-        <div class="comment_reply_btn">
-          답글달기
-        </div>
+        
       </div>
       {% endfor %}
       

@@ -486,12 +486,31 @@ box-sizing: border-box;
   background: #fff;
   box-shadow: 8px 11px 16px rgba(0, -1, 0, 0.08);
   margin-left: 50px;
+  display: flex;
+  overflow: hidden;
 }
 
-#happy_graph .happy_family{
+#family-members{
   width: 131px;
+  height: 100%;
+  border-right: 1px solid #B1B1B1;
+}
+
+#family-members .person-name{
   height: 60px;
-  border: 1px solid black;
+  text-align: center;
+  padding-top: 22px;
+  border-bottom: 1px solid #B1B1B1;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.person-name:hover{
+  background: #EEEEEE;
+}
+
+#emotion-graph{
+  width: 475px;
 }
 
 #lastest_diary{

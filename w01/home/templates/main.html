@@ -115,10 +115,10 @@
 		<!-- 프로필 -->
 		<div id="user_profile">
 			<div id="pimg">
-				<img src="/static/images/home/default_profile.png" alt="">
+				<img src="{{ my_img.img.url }}" alt="">
 			</div>
-			<p id="uName">김용준</p>
-			<p id="uEmail">kyjoon0105@gmail.com</p>
+			<p id="uName">{{my.name}}</p>
+			<p id="uEmail">{{my.mail}}</p>
 		</div>
 
 		<!-- Nav -->
@@ -247,26 +247,38 @@
 						<button id="main_wbtn" type="button">+</button>
 						<!-- 반복부분 -->
 						<div id="dlist">
-							<p class="dlist_type">My Diary</p>
-							<p class="dlist_title">내가 한 말을 내가 오해하지 않기로 함</p>
-							<div>
-								<p class="dlist_date">2022-11-28<br>~</p>
-							</div>
+							<a href="/diary/MdiaryList/">
+								<p class="dlist_type">My Diary</p>
+								<p class="dlist_title">{{my_diary.mtitle}}</p>
+								<div>
+									<p class="dlist_date">{{my_diary.mdate | date:"Y-m-d"}}<br>~</p>
+								</div>
+							</a>
 						</div>
+
+						{% if my.created_group.gtitle %}
 						<div id="dlist">
-							<p class="dlist_type">Family Diary</p>
-							<p class="dlist_title">우리 가족 추억보관함</p>
-							<div>
-								<p class="dlist_date">2022-11-28<br>~</p>
-							</div>
+							<a href="/diary/CdiaryList/">
+								<p class="dlist_type">Family Diary</p>
+								<p class="dlist_title">{{my.created_group.gtitle}}</p>
+								<div>
+									<p class="dlist_date">{{my.created_group.created_at | date:"Y-m-d"}}<br>~</p>
+								</div>
+							</a>
 						</div>
+						{% endif %}
+
+						{% if my.joined_group.gtitle %}
 						<div id="dlist">
-							<p class="dlist_type">My Diary</p>
-							<p class="dlist_title">내가 한 말을 내가 오해하지 않기로 함</p>
-							<div>
-								<p class="dlist_date">2022-11-28<br>~</p>
-							</div>
+							<a href="/diary/JdiaryList/">
+								<p class="dlist_type">Family Diary</p>
+								<p class="dlist_title">{{my.joined_group.gtitle}}</p>
+								<div>
+									<p class="dlist_date">{{my.joined_group.created_at | date:"Y-m-d"}}<br>~</p>
+								</div>
+							</a>
 						</div>
+						{% endif %}
 
 				</div>
 			</div>
@@ -385,8 +397,8 @@
 					<button type="button" onclick="" class="main_btn">자세히 보기&nbsp&nbsp&nbsp></button>
 				</div>
 				<div id="happy_graph">
-					<div class='happy_family'><a href=""></a></div>
-					<div id="happy_graph1"></div>
+					<div id="family-members"></div>
+					<div id="emotion-graph"></div>
 				</div>
 			</div>
 		</div>
