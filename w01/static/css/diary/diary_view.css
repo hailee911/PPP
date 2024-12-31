@@ -22,10 +22,9 @@ table, tr, td{
 }
 
 /* container */
-#container{
+#container1{
   width: 100%;
-  min-height: 100vh; /* 화면 높이와 동일하게 설정 */
-  padding: 70px 300px 0 350px;
+  padding: 70px 300px 80px 350px;
   /* margin-left: 50px; */
 }
 
@@ -280,17 +279,42 @@ table, tr, td{
   cursor: pointer;
 }
 
+.c_modal{
+  display: none; /* 기본적으로 숨김 */
+  position: absolute; /* 이미지의 바로 옆에 표시되도록 설정 */
+  /*left: 100%;  이미지 바로 오른쪽에 위치 */
+  left: 0; /* 이미지 바로 오른쪽에 위치 */
+  width: 60px; /* 모달의 크기를 버튼 크기에 맞춰 설정 */
+  background-color: white;
+  color: rgb(87, 78, 78);
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 심플한 그림자 효과 */
+  transition: transform 0.3s ease-in-out; /* 애니메이션 효과 */
+  transform: translateY(-20px); /* 초기 상태에서 살짝 위에 위치 */
+  cursor: pointer;
+}
+
 /* 슬라이드 창이 열릴 때 */
 .sub_menu_modal.open {
   display: block; /* 슬라이드 창 표시 */
   transform: translateY(0); /* 슬라이드 창을 아래로 내려온 상태로 설정 */
 }
 
+
 /* 버튼들이 가로로 정렬되도록 설정 */
 #sub_menu_content {
   display: flex;
   flex-direction: column; /* 버튼을 세로로 나열 */
   gap: 2px; /* 버튼 간 간격 */
+}
+
+.c_modal button{
+  width: 100%; /* 버튼 너비를 100%로 설정하여 모달의 너비에 맞게 확장 */
+  height: 33px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 /* 버튼 스타일 */
@@ -303,18 +327,28 @@ table, tr, td{
   font-size: 14px;
 }
 
-.sub_menu_modal #editButton_1, .sub_menu_modal #editButton_2 {
+.sub_menu_modal #editButton_1 {
   color: black;
   border: 1px solid #d9d9d9;
 }
 
-.sub_menu_modal #deleteButton_1, .sub_menu_modal #deleteButton_2 {
+#editButton{
+  color: black;
+  border: 1px solid #d9d9d9;
+}
+
+.sub_menu_modal #deleteButton_1, #deleteButton {
   color: #FF4141;
   border: 1px solid #FF8C8C;
 }
 
 /* 버튼 호버 효과 */
 .sub_menu_modal button:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.c_modal button:hover {
   background-color: #0056b3;
   color: white;
 }

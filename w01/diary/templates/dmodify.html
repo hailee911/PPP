@@ -49,29 +49,18 @@
     <!-- Nav -->
     <nav id="menu">
       <ul>
-        <a href="#">
-          <li class="menu_item">우리 가족 이야기</li>
-        </a>
-        <a href="#">
-          <li class="menu_item active">다이어리</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">감정 돌아보기</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">우리가족</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">캘린더</li>
-        </a>
-        <a href="#">
-          <li class="menu_item">알려드려요</li>
-        </a>
+        <a href="/main/index/"><li class="menu_item">우리 가족 이야기</li></a>
+        <a href="/diary/diaryHome/"><li class="menu_item active">다이어리</li></a>
+        <a href="/emotion/main/"><li class="menu_item">감정 돌아보기</li></a>
+        <a href="/family1/fam/"><li class="menu_item">우리가족</li></a>
+        <a href="/calendar1/cal/"><li class="menu_item">캘린더</li></a>
+        <a href="/customer/"><li class="menu_item">알려드려요</li></a>
       </ul>
     </nav>
+
     <!-- logout -->
     <div id="logout">
-      <a href="#"><span>로그아웃</span></a>
+      <a href="/main/logout/"><span>로그아웃</span></a>
     </div>
   </div>
   <!-- 공통 상단좌측메뉴 -->
@@ -107,43 +96,40 @@
         <label for="content">내용</label>
         <textarea name="content" id="content" rows="10" oninput="autoResize(this)" placeholder="내용을 입력해주세요." required>{{diary.ccontent}}</textarea>
       </div>
-      <!-- 다이어리 체크박스 예시 -->
-      <!-- {% if diaries %}
-      <div>
-        <p>공유 다이어리에 등록합니다:</p>
-        {% for diary in diaries %}
-        <label>
-          <input type="checkbox" name="diary_ids" value="{{ diary.id }}">
-          {{ diary.title }}
-        </label><br>
-        {% endfor %}
-      </div>
-      {% else %}
-      <p>공유 가능한 다이어리가 없습니다.</p>
-      {% endif %} -->
-      {% comment %} {% if created_d or joined_d %} {% endcomment %}
+   
       <div class="form-group">
           <label>공유</label><br>
+          {% comment %} created 그룹이 있을 때  {% endcomment %}
           {% if created_group != None %}
-            {% comment %} {% if diary.group_diary[0] != "" %} {% endcomment %}
+            {% if created_d == 0 %}
             <label id="fdiary">
-              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" checked >
+              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" >
               {{ created_group.gName }}
             </label>
-            {% comment %} {% else %} {% endcomment %}
+            {% else %}
             <label id="fdiary">
-              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" checked >
+              <input type="checkbox" id="share" name="diary_idc" value="{{ created_group.gno }}" checked>
               {{ created_group.gName }}
             </label>
-            {% comment %} {% endif %} {% endcomment %}
+            {% endif %}
           {% else %}
-          <label id="fdiary"></label>
+            <label id="fdiary"></label>
           {% endif %}
-          {% if joined_group != "" %}
-          <label id="fdiary">
-            <input type="checkbox" id="share" name="diary_idj" value="{{ joined_group.gno }}">
-            {{ joined_group.gName }}
-          </label>
+
+          {% if joined_group != None %}
+            {% if joined_d == 0 %}
+            <label id="fdiary">
+              <input type="checkbox" id="share" name="diary_idj" value="{{ joined_group.gno }}">
+              {{ joined_group.gName }}
+            </label>
+            {% else %}
+            <label id="fdiary">
+              <input type="checkbox" id="share" name="diary_idj" value="{{ joined_group.gno }}" checked>
+              {{ joined_group.gName }}
+            </label>
+            {% endif %}
+          {% else %}
+            <label id="fdiary"></label>
           {% endif %}
       </div>
       {% comment %} {% endif %} {% endcomment %}
@@ -180,7 +166,7 @@
   function confirmCancel() {
     var confirmAction = confirm("정말 취소하시겠습니까?");
     if (confirmAction) {
-      window.location.href = '/diary/dmodify/{{diary.cno}}';  // 취소 후 이동
+      window.location.href = '/diary/diary_view/{{diary.cno}}';  // 취소 후 이동
     }
   }
   function autoResize(textarea) {

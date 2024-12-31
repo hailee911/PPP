@@ -8,6 +8,7 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 <link rel="stylesheet" href="{% static '/css/home/main.css' %}">
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <title>우리의 기록</title>
 <style>
 
@@ -384,10 +385,14 @@
 					<button type="button" onclick="" class="main_btn">자세히 보기&nbsp&nbsp&nbsp></button>
 				</div>
 				<div id="happy_graph">
-
+					<div class='happy_family'><a href=""></a></div>
+					<div id="happy_graph1"></div>
 				</div>
 			</div>
 		</div>
+		<!-- 우리 가족 감정 그래프 스크립트 -->
+		<script src="{% static 'js/main/main_emotion.js'%}"></script>
+		<!-- 우리 가족 감정 그래프 스크립트 -->
 
 		<div id="main_sec3">
 			<div id="lastest_diary">

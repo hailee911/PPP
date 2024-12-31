@@ -29,3 +29,17 @@ def search(request):
   print("qs : ",qs)
   context = {"list_qs":qs}
   return JsonResponse(context)
+
+# 우리가족 그래프
+def get_family_members(request):
+    id = request.session['session_id']
+    qs = Member.objects.filter(id=id).first()
+
+    my_cdi = qs.created_group.gno
+    my_jdi = qs.joined_group.gno
+
+    print('나오나요',my_cdi,my_jdi)
+    # 가족 구성원의 이름을 가져옵니다.
+    family_members = Member.objects.all()
+    data = [{'id': member.id, 'name': member.name} for member in family_members]
+    return JsonResponse(data, safe=False)

@@ -102,7 +102,11 @@
     <div class="list_group">
       <a href="/diary/diary_view/{{c.cno}}/?pageNum={{forloop.revcounter}}">
         <div class="wrap_cont">
+          {% if c.group_diary.all %}
+          <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{c.ctitle}}<span class="img"></span></span>
+          {% else %}
           <span class="tit_post"><span class="num_txt">{{forloop.revcounter}}</span>{{c.ctitle}}<span class="img"><img src="/static/images/diary/lock.png" alt=""></span></span>
+          {% endif %}
           <p class="desc_cont">
             <span class="diaryTit">{{mdiary.mtitle}}</span><span class="space"> | </span>
             <span class="list_txt">{{c.ccontent}}

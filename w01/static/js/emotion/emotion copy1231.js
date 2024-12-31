@@ -172,7 +172,7 @@ window.onload = function () {
    }
 
 
-  // 파이차트 댓글
+  // 파이차트 좋아요 
   function drawPieChart({ selector, data }) {
 	  const container = document.querySelector(selector);
 	  const width = container.offsetWidth;
@@ -225,7 +225,7 @@ window.onload = function () {
 			group.append("text")
 			   .attr("x", 20)
 			   .attr("y", 12)
-			   .text(`${d.name} (${d.value}개)`);
+			   .text(`${d.name} (${percentage}%)`);
 		 });
 
 	  // Resize functionality for Pie chart
