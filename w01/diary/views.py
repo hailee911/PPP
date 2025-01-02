@@ -233,18 +233,10 @@ def diaryWrite(request):
 					cdate = date
 				else:
 					cdate = timezone.now()
-				# 로그인 후 첫 접속 시 세션에 diary_count 초기화 (새로운 세션 시작)
-				if f"diary_count_{id}" not in request.session:
-						request.session[f"diary_count_{id}"] = 1
-				else:
-						# 세션에 diary_count가 있으면 증가
-						diary_count = request.session[f"diary_count_{id}"] + 1
-						request.session[f"diary_count_{id}"] = diary_count
-				# cno는 세션 고유 번호로 관리된 카운터 값 사용
-				cno = str(request.session[f"diary_count_{id}"])
+				
 				# Content 객체 생성하여 저장
 				new_diary = Content(
-						cno=cno, #생성된 cno사용
+						# cno=cno, #생성된 cno사용
 						member=member,
 						ctitle=title,
 						ccontent=content,
@@ -583,8 +575,7 @@ def CdiaryList(request):
 				joined_group = GroupDiary.objects.filter(gno=created_group.gno)
 				# 사용자가 속한 그룹에 해당하는 모든 게시글 가져오기
 				# 자신이 속한 그룹에 공유된 게시글 가져오기
-				diaries = Content.objects.filter(
-						Q(group_diary=created_group) | Q(group_diary=joined_group),  # 그룹 다이어리 기준으로
+				diaries = Content.objects.filter(group_diary=created_group,  # 그룹 다이어리 기준으로
 						group_diary__isnull=False  # group_diary가 None이 아닌 게시글만
 				).order_by('-cdate')  # 최신순 정렬
 			else:
