@@ -143,7 +143,14 @@ def run_ai_process(request):
     return render(request, 'report.html', {'content': output_content})
 
 def report(request):
-    return render(request, 'report.html')
+    id = request.session['session_id']
+    member = Member.objects.filter(id=id).first()
+    qb = Img.objects.filter(id=id).first()
+    context = {
+        'member':member,
+        'qb':qb,
+    }
+    return render(request, 'report.html', context)
 
 def main(request):
   # 프로필 가져오기 

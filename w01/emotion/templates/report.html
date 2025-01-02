@@ -41,7 +41,7 @@
 		<ul class="top_menu">
 			<li><a href="#"><img src="/static/images/home/search_icon.png" alt=""></a></li>
 			<li><a href="#"><img src="/static/images/home/bell_off_icon.png" alt=""></a></li>
-			<li><a href="#">마이페이지</a></li>
+			<li><a href="/mypage/main/">마이페이지</a></li>
 		</ul>
 
 	</div>
@@ -52,10 +52,10 @@
 		<!-- 프로필 -->
 		<div id="user_profile">
 			<div id="pimg">
-				<img src="/static/images/home/default_profile.png" alt="">
+				<img src="{{ qb.img.url }}" alt="" />
 			</div>
-			<p id="uName">김용준</p>
-			<p id="uEmail">kyjoon0105@gmail.com</p>
+			<p id="uName">{{member.name}}</p>
+			<p id="uEmail">{{member.mail}}</p>
 		</div>
 
 		<!-- Nav -->

@@ -10,6 +10,7 @@ from django.db.models import Max
 from django.db.models import Q
 from django.urls import reverse
 from comment.models import Comment  # 댓글 모델 가져오기
+from mypage.models import Img       # 프로필 사진 가져오기
 from django.views.decorators.cache import cache_control
 from django.http import JsonResponse, HttpResponseForbidden
 
@@ -22,6 +23,7 @@ from .models import MdiaryBoard
 def diaryHome(request):
 	id = request.session.get('session_id')
 	name = request.session.get('session_name')
+	my_info = Member.objects.filter(id=id).first()
 	qs_group = GroupDiary.objects.filter(member=id)
 
 	## 공유 일기장
@@ -47,15 +49,16 @@ def diaryHome(request):
 		# 멤버 정보가져오기
 		# 방장
 		gno = qs_joinedDiary[0].gno
+		qs_joinedMem = GroupDiary.objects.filter(gno=qs_joinedDiary[0].gno, role=2)
 		qs_cMem = Member.objects.filter(created_group__gno=gno).first()
 
 		jmems = []
-		for jmem in qs_joinedDiary:
+		for jmem in qs_joinedMem:
 			member = jmem.member
 			j = Member.objects.get(id=member.id)
 			jmems.append(j.name)
 		c_context['cMem'] = qs_cMem
-		c_context['join_d'] = list(qs_joinedDiary)
+		c_context['join_d'] = list(qs_joinedMem)
 		c_context['joined_names'] = jmems
 
 
@@ -63,9 +66,9 @@ def diaryHome(request):
 	qs_pDiary = MdiaryBoard.objects.get(id=id)
 	c_context['pDiary'] = qs_pDiary
 
-
+	c_context['qb'] = Img.objects.filter(id=id).first()
+	c_context['info'] = my_info
 	c_context['group'] = qs_group
-	print("c_context : ",c_context)
 	return render(request,'diaryHome.html',c_context)
 
 
@@ -86,18 +89,19 @@ def diaryHome(request):
 		
 
 
-
 ## 가족다이어리 생성
 def diaryMake(request):
 	if request.method == 'GET':
 		qs_Member = Member.objects.all()
 		id = request.session['session_id']
+		my_info = Member.objects.filter(id=id).first()
+		qb = Img.objects.filter(id=id).first()
 		qs_createdDiary = GroupDiary.objects.filter(Q(member__id=id) & Q(role=1))
 		if qs_createdDiary:
-			context = {"gmsg":"0"}
+			context = {"gmsg":"0", 'info':my_info, 'qb':qb}
 			return render(request,'diaryHome.html', context)
 		else:
-			context = {'members':qs_Member,"gmsg":"1"}
+			context = {'members':qs_Member,"gmsg":"1", 'info':my_info, 'qb':qb}
 			return render(request,'diaryMake.html', context)
 
 	else:
@@ -138,13 +142,10 @@ def diaryMake(request):
 		return render(request, 'diaryHome.html', context)
 		
 
-
 ## 내 다이어리 목록
-
 def MdiaryList(request):
 	# 세션에 저장된 ID 가져오기
 	session_id = request.session.get('session_id')  # 세션에서 'session_id'를 가져옴
-	print("세션아이디:", session_id)
 
 	# 세션에 해당하는 ID가 존재하는지 확인
 	if not session_id:
@@ -152,7 +153,7 @@ def MdiaryList(request):
 	
 	# session_id를 기준으로 Member 찾기
 	member = Member.objects.filter(id=session_id).first()
-
+	
 	# member가 없으면 에러 처리
 	if not member:
 			return render(request, 'error.html', {'message': '사용자 정보가 존재하지 않습니다.'})
@@ -164,105 +165,111 @@ def MdiaryList(request):
 
 	# 해당 멤버의 Content 가져오기
 	qs = Content.objects.filter(member=member).select_related('mdiary').order_by("-cdate")
-
+	qb = Img.objects.filter(id=session_id).first()
 	npage = request.GET.get('npage', 1)
 	paginator = Paginator(qs, 10)
 	page_obj = paginator.get_page(npage)
 	
-	context = {'content': page_obj.object_list,'MdiaryList':page_obj,'mdiary':mdiary}
+	context = {'content': page_obj.object_list,
+						'MdiaryList':page_obj,
+						'mdiary':mdiary,
+						'qb':qb,
+						'info':member,}
 	return render(request, 'MdiaryList.html', context)
 		
 	
-
 # 개인 다이어리 제목 수정
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 def update_diary_title(request):
-    if request.method == 'POST' and request.is_ajax():
-        new_title = request.POST.get('title')
-        mdiary = get_object_or_404(MdiaryBoard, id=request.user.id)  # 로그인된 사용자에 맞는 다이어리 가져오기
-        mdiary.mtitle = new_title
-        mdiary.save()
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
-
+		if request.method == 'POST' and request.is_ajax():
+				new_title = request.POST.get('title')
+				mdiary = get_object_or_404(MdiaryBoard, id=request.user.id)  # 로그인된 사용자에 맞는 다이어리 가져오기
+				mdiary.mtitle = new_title
+				mdiary.save()
+				return JsonResponse({'success': True})
+		return JsonResponse({'success': False})
 
 
 # 다이어리 작성 저장
 def diaryWrite(request):
-    if request.method == "GET":
-        # 세션에서 사용자 ID 가져오기
-        id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
-        current_date = timezone.now().date().strftime('%Y-%m-%d')
-        # 생성한 그룹과 참여한 그룹 가져오기
-        user = Member.objects.filter(id=id)
-        created_group = user[0].created_group
-        joined_group = user[0].joined_group
-        return render(request, 'diaryWrite.html', {
-            'current_date': current_date,
-            'created_group': created_group,
-            'joined_group': joined_group,
-        })
-    elif request.method == "POST":
-        current_date = timezone.now().date().strftime('%Y-%m-%d')
-        # 세션에서 사용자 ID 가져오기
-        id = request.session.get('session_id')  # 세션에서 사용자 ID 가져오기
-        if not id:
-            return HttpResponse("로그인 정보가 없습니다.", status=400)
-        # Member 모델에서 해당 ID로 회원 조회
-        member = Member.objects.filter(id=id).first()  # 없으면 None 반환
-        if not member:
-            return HttpResponse("사용자 정보가 존재하지 않습니다.", status=400)
-        # 다이어리 작성 내용 저장
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        image = request.FILES.get('image')
-        diary_idc = request.POST.get('diary_idc','')
-        diary_idj = request.POST.get('diary_idj','')
-        selected_groups = [diary_idc,diary_idj]
-        date = request.POST.get('date')
-        if date != current_date:
-          cdate = date
-        else:
-          cdate = timezone.now()
-        # 로그인 후 첫 접속 시 세션에 diary_count 초기화 (새로운 세션 시작)
-        if f"diary_count_{id}" not in request.session:
-            request.session[f"diary_count_{id}"] = 1
-        else:
-            # 세션에 diary_count가 있으면 증가
-            diary_count = request.session[f"diary_count_{id}"] + 1
-            request.session[f"diary_count_{id}"] = diary_count
-        # cno는 세션 고유 번호로 관리된 카운터 값 사용
-        cno = str(request.session[f"diary_count_{id}"])
-        # Content 객체 생성하여 저장
-        new_diary = Content(
-            cno=cno, #생성된 cno사용
-            member=member,
-            ctitle=title,
-            ccontent=content,
-            image=image,
-            cdate=cdate,
-        )
-        new_diary.save()
-        ## 공유하려는 다이어리가 있으면
-        if selected_groups[0]  ==  '' and  selected_groups[1]  == '':
-          return redirect('diary:MdiaryList')
-        else:
-            # join된 일기장에만 공유
-            if selected_groups[0] == '':
-                joined_group = GroupDiary.objects.filter(gno=selected_groups[1]).first()
-                new_diary.group_diary.add(joined_group)
-            # create 한 일기장에만 공유
-            elif selected_groups[1] == '':
-                created_group = GroupDiary.objects.filter(gno=selected_groups[0]).first()
-                new_diary.group_diary.add(created_group)
-            # 모두 공유
-            else:
-                created_group = GroupDiary.objects.filter(gno=selected_groups[0]).first()
-                joined_group = GroupDiary.objects.filter(gno=selected_groups[1]).first()
-                new_diary.group_diary.add(created_group,joined_group)
-            return redirect('diary:MdiaryList')  # 다이어리 리스트로 리다이렉트
+		if request.method == "GET":
+				# 세션에서 사용자 ID 가져오기
+				id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
+				my_info = Member.objects.filter(id=id).first()
+				qb = Img.objects.filter(id=id).first()
+				current_date = timezone.now().date().strftime('%Y-%m-%d')
+				# 생성한 그룹과 참여한 그룹 가져오기
+				user = Member.objects.filter(id=id)
+				created_group = user[0].created_group
+				joined_group = user[0].joined_group
+				return render(request, 'diaryWrite.html', {
+						'current_date': current_date,
+						'created_group': created_group,
+						'joined_group': joined_group,
+						'info':my_info,
+						'qb':qb,
+				})
+		elif request.method == "POST":
+				current_date = timezone.now().date().strftime('%Y-%m-%d')
+				# 세션에서 사용자 ID 가져오기
+				id = request.session.get('session_id')  # 세션에서 사용자 ID 가져오기
+				if not id:
+						return HttpResponse("로그인 정보가 없습니다.", status=400)
+				# Member 모델에서 해당 ID로 회원 조회
+				member = Member.objects.filter(id=id).first()  # 없으면 None 반환
+				if not member:
+						return HttpResponse("사용자 정보가 존재하지 않습니다.", status=400)
+				# 다이어리 작성 내용 저장
+				title = request.POST.get('title')
+				content = request.POST.get('content')
+				image = request.FILES.get('image')
+				diary_idc = request.POST.get('diary_idc','')
+				diary_idj = request.POST.get('diary_idj','')
+				selected_groups = [diary_idc,diary_idj]
+				date = request.POST.get('date')
+				if date != current_date:
+					cdate = date
+				else:
+					cdate = timezone.now()
+				# 로그인 후 첫 접속 시 세션에 diary_count 초기화 (새로운 세션 시작)
+				if f"diary_count_{id}" not in request.session:
+						request.session[f"diary_count_{id}"] = 1
+				else:
+						# 세션에 diary_count가 있으면 증가
+						diary_count = request.session[f"diary_count_{id}"] + 1
+						request.session[f"diary_count_{id}"] = diary_count
+				# cno는 세션 고유 번호로 관리된 카운터 값 사용
+				cno = str(request.session[f"diary_count_{id}"])
+				# Content 객체 생성하여 저장
+				new_diary = Content(
+						cno=cno, #생성된 cno사용
+						member=member,
+						ctitle=title,
+						ccontent=content,
+						image=image,
+						cdate=cdate,
+				)
+				new_diary.save()
+				## 공유하려는 다이어리가 있으면
+				if selected_groups[0]  ==  '' and  selected_groups[1]  == '':
+					return redirect('diary:MdiaryList')
+				else:
+						# join된 일기장에만 공유
+						if selected_groups[0] == '':
+								joined_group = GroupDiary.objects.filter(gno=selected_groups[1]).first()
+								new_diary.group_diary.add(joined_group)
+						# create 한 일기장에만 공유
+						elif selected_groups[1] == '':
+								created_group = GroupDiary.objects.filter(gno=selected_groups[0]).first()
+								new_diary.group_diary.add(created_group)
+						# 모두 공유
+						else:
+								created_group = GroupDiary.objects.filter(gno=selected_groups[0]).first()
+								joined_group = GroupDiary.objects.filter(gno=selected_groups[1]).first()
+								new_diary.group_diary.add(created_group,joined_group)
+						return redirect('diary:MdiaryList')  # 다이어리 리스트로 리다이렉트
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -271,7 +278,7 @@ def diary_view(request,cno):
 		session_id = request.session.get('session_id')
 		member = Member.objects.filter(id=session_id).first()
 		mdiary = MdiaryBoard.objects.filter(id=member).first()
-		
+		qb = Img.objects.filter(id=session_id).first()
 		current_post = Content.objects.filter(cno=cno)
 		if not current_post:
 				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
@@ -322,6 +329,8 @@ def diary_view(request,cno):
 				'diary':'Mdiary',
 				'comments': comments,             # 댓글 리스트
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
+				'qb':qb,                            # 프사
+				'member':member,                           # 내정보
 		}
 		return render(request,'diary_view.html',context,)
 
@@ -333,7 +342,7 @@ def Cdiary_view(request,cno):
 		session_id = request.session.get('session_id')
 		member = Member.objects.filter(id=session_id).first()
 		Cdiary = GroupDiary.objects.filter(member=member).first()
-		
+		qb = Img.objects.filter(id=session_id).first()
 		current_post = Content.objects.filter(cno=cno)
 		if not current_post:
 				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
@@ -372,6 +381,8 @@ def Cdiary_view(request,cno):
 				'diary':'Cdiary',
 				'comments': comments,             # 댓글 리스트
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
+				'qb':qb,
+				'member':member,
 		}
 		return render(request,'diary_view.html',context,)
 
@@ -382,7 +393,7 @@ def Jdiary_view(request,cno):
 		session_id = request.session.get('session_id')
 		member = Member.objects.filter(id=session_id).first()
 		Jdiary = GroupDiary.objects.filter(member=member).first()
-		
+		qb = Img.objects.filter(id=session_id).first()
 		current_post = Content.objects.filter(cno=cno)
 		if not current_post:
 				return HttpResponse("게시물이 존재하지 않습니다.", status=404)
@@ -421,6 +432,8 @@ def Jdiary_view(request,cno):
 				'diary':'Jdiary',
 				'comments': comments,             # 댓글 리스트
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
+				'qb':qb,
+				'member':member,
 		}
 		return render(request,'diary_view.html',context,)
 
@@ -434,6 +447,7 @@ def dmodify(request,cno):
 		id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
 		qs = Content.objects.filter(cno=cno)
 		user = Member.objects.filter(id=id)
+		qb = Img.objects.filter(id=id).first()
 		created_group = user[0].created_group
 		joined_group = user[0].joined_group
 		# 내가 공유한 다이어리가 있는지 확인
@@ -453,7 +467,13 @@ def dmodify(request,cno):
 			created_d = 0
 			joined_d = 0
 
-		context = {"diary":qs[0],"created_group":created_group,"created_d":created_d,"joined_group":joined_group,"joined_d":joined_d}
+		context = {"diary":qs[0],
+						 "created_group":created_group,
+						 "created_d":created_d,
+						 "joined_group":joined_group,
+						 "joined_d":joined_d,
+						 'info':user,
+						 'qb':qb,}
 		return render(request,'dmodify.html',context)
 	
 	else:  #post
@@ -496,77 +516,83 @@ def dmodify(request,cno):
 	## 게시글 삭제
 
 def ddelete(request, cno):
-  if request.method == "POST":  # 요청 방식이 POST인지 확인
-      # 세션에서 사용자 ID 가져오기
-      session_id = request.session.get('session_id')
-      member = Member.objects.filter(id=session_id).first()
-      # 사용자와 게시글 작성자가 동일한지 확인
-      content = Content.objects.filter(cno=cno, member=member).first()
-      if not content:
-          return HttpResponseForbidden("권한이 없거나 게시물이 존재하지 않습니다.")
-      # 게시글 삭제
-      content.delete()
-      return JsonResponse({'status': 'success', 'message': '게시물이 삭제되었습니다.'})
-  return JsonResponse({'status': 'error', 'message': '잘못된 요청입니다.'}, status=400)
+	if request.method == "POST":  # 요청 방식이 POST인지 확인
+			# 세션에서 사용자 ID 가져오기
+			session_id = request.session.get('session_id')
+			member = Member.objects.filter(id=session_id).first()
+			# 사용자와 게시글 작성자가 동일한지 확인
+			content = Content.objects.filter(cno=cno, member=member).first()
+			if not content:
+					return HttpResponseForbidden("권한이 없거나 게시물이 존재하지 않습니다.")
+			# 게시글 삭제
+			content.delete()
+			return JsonResponse({'status': 'success', 'message': '게시물이 삭제되었습니다.'})
+	return JsonResponse({'status': 'error', 'message': '잘못된 요청입니다.'}, status=400)
 
 ## join 일기장 보기
 def JdiaryList(request):
-		 if request.method == "GET":        
-				# 세션에 저장된 ID 가져오기
-				session_id = request.session.get('session_id')  # 세션에서 'session_id'를 가져옴
-				print("세션아이디:", session_id)
+	if request.method == "GET":        
+		# 세션에 저장된 ID 가져오기
+		session_id = request.session.get('session_id')  # 세션에서 'session_id'를 가져옴
 
-				# session_id를 기준으로 Member 찾기
-				member = Member.objects.filter(id=session_id).first()
-				if member.joined_group:
-					# Member 에서 join 다이어리 gno 가져오기
-					gno = member.joined_group.gno
-					joingroup = GroupDiary.objects.filter(gno=gno).first()
-					print('조인된 그룹 : ',joingroup)
-					print('조인된 그룹 : ',joingroup.created_at)
-					
-					# join다이어리의 Content 가져오기
-					contents = joingroup.content_set.all().order_by("-cdate")  # 해당 GroupDiary에 연결된 모든 Content 객체 가져오기
-					print(contents[0].ctitle)
-					if not contents:
-						return render(request, 'JdiaryList.html')
+		# session_id를 기준으로 Member 찾기
+		member = Member.objects.filter(id=session_id).first()
+		qb = Img.objects.filter(id=session_id).first()
 
-					npage = request.GET.get('npage', 1)
-					paginator = Paginator(contents, 10)
-					page_obj = paginator.get_page(npage)
-					
-					context = {
-						'member':member,
-						'content': page_obj.object_list,
-						'JdiaryList':page_obj,
-						'jdiary':contents,
-						'joinDiary':joingroup }
-					return render(request, 'JdiaryList.html', context)
-				else:
-					return render(request, 'JdiaryList.html')
+		if not member:
+			return HttpResponse("사용자 정보가 존재하지 않습니다.", status=400)
+
+		if member.joined_group:
+			# Member 에서 join 다이어리 gno 가져오기
+			gno = member.joined_group.gno
+			joingroup = GroupDiary.objects.filter(gno=gno).first()
+			
+			# join다이어리의 Content 가져오기
+			contents = joingroup.content_set.all().order_by("-cdate")  # 해당 GroupDiary에 연결된 모든 Content 객체 가져오기
+			if not contents:
+				return render(request, 'JdiaryList.html')
+
+			npage = request.GET.get('npage', 1)
+			paginator = Paginator(contents, 10)
+			page_obj = paginator.get_page(npage)
+			
+			context = {
+				'member':member,
+				'content': page_obj.object_list,
+				'JdiaryList':page_obj,
+				'jdiary':contents,
+				'joinDiary':joingroup,
+				'qb':qb}
+			return render(request, 'JdiaryList.html', context)
+		else:
+			return render(request, 'JdiaryList.html')
 				
 # create 일기장 보기
 def CdiaryList(request):
-    if request.method == "GET":
-        id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
-        # 현재 로그인한 사용자 확인
-        member = Member.objects.filter(id=id).first()
-        if not member:
-            return HttpResponse("사용자 정보가 존재하지 않습니다.", status=400)
-        # 사용자가 만든 그룹 (created_group) 정보
-        created_group = member.created_group
-        # 사용자가 초대된 그룹 (joined_group) 정보
-        joined_group = member.joined_group
-        # 사용자가 속한 그룹에 해당하는 모든 게시글 가져오기
-        if created_group or joined_group:
-            # 자신이 속한 그룹에 공유된 게시글 가져오기
-            diaries = Content.objects.filter(
-                Q(group_diary=created_group) | Q(group_diary=joined_group),  # 그룹 다이어리 기준으로
-                group_diary__isnull=False  # group_diary가 None이 아닌 게시글만
-            ).order_by('-cdate')  # 최신순 정렬
-        else:
-            diaries = Content.objects.none()  # 그룹에 속하지 않으면 게시글 없음
-        return render(request, 'CdiaryList.html', {
-            'diaries': diaries,            # 다이어리 리스트
-            'created_group': created_group  # 그룹 정보
-        })
+	if request.method == "GET":
+			id = request.session.get('session_id')  # 현재 사용자의 ID 가져오기
+			# 현재 로그인한 사용자 확인
+			member = Member.objects.filter(id=id).first()
+			qb = Img.objects.filter(id=id).first()
+			if not member:
+					return HttpResponse("사용자 정보가 존재하지 않습니다.", status=400)
+			if member.created_group:
+				# 사용자가 만든 그룹 (created_group) 정보
+				created_group = member.created_group
+				# 사용자가 초대된 그룹 (joined_group) 정보
+				joined_group = GroupDiary.objects.filter(gno=created_group.gno)
+				# 사용자가 속한 그룹에 해당하는 모든 게시글 가져오기
+				# 자신이 속한 그룹에 공유된 게시글 가져오기
+				diaries = Content.objects.filter(
+						Q(group_diary=created_group) | Q(group_diary=joined_group),  # 그룹 다이어리 기준으로
+						group_diary__isnull=False  # group_diary가 None이 아닌 게시글만
+				).order_by('-cdate')  # 최신순 정렬
+			else:
+					diaries = None  # 그룹에 속하지 않으면 게시글 없음
+					created_group = None  # 그룹정보 없음
+			return render(request, 'CdiaryList.html', {
+					'diaries': diaries,            # 다이어리 리스트
+					'created_group': created_group,  # 그룹 정보
+					'info': member,                  # 내정보
+					'qb':qb,
+			})

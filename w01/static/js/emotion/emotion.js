@@ -103,7 +103,7 @@ window.onload = function () {
 
 		   // Draw bars
 		   svg.selectAll(".bar")
-			   .data(data)
+			   .data(data.filter(d => d.value > 0)) // value2 > 0인 데이터만 처리
 			   .enter()
 			   .append("rect")
 			   .attr("class", "bar")
@@ -117,7 +117,7 @@ window.onload = function () {
 
 		   // 두 번째 바 (value2)
 		   svg.selectAll(".bar2")
-			   .data(data)
+			   .data(data.filter(d => d.value2 > 0)) // value2 > 0인 데이터만 처리
 			   .enter()
 			   .append("rect")
 			   .attr("class", "bar2")

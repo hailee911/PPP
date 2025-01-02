@@ -75,10 +75,10 @@
   <!-- 프로필 -->
   <div id="user_profile">
     <div id="pimg">
-      <img src="/static/images/home/default_profile.png" alt="">
+      <img src="{{ qb.img.url }}" alt="" />
     </div>
-    <p id="uName">김용준</p>
-    <p id="uEmail">kyjoon0105@gmail.com</p>
+    <p id="uName">{{info.name}}</p>
+    <p id="uEmail">{{info.mail}}</p>
   </div>
 
   <!-- Nav -->

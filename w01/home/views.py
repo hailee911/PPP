@@ -54,23 +54,67 @@ def get_family_members(request):
     id = request.session['session_id']
     qs = Member.objects.filter(id=id).first()
     
-    my_cdi = qs.created_group.gno
-    my_jdi = qs.joined_group.gno
+    # 가입된 그룹이 없을 때
+    if qs.created_group == None and qs.joined_group == None:
+        return JsonResponse(data, safe=False)
+    
+    # 만든 그룹만 있을 때
+    else:
+        if qs.created_group and qs.joined_group == None:
+            my_cdi = qs.created_group.gno
 
-    # 가족 구성원의 이름을 가져옵니다.
-    family_members = GroupDiary.objects.filter(Q(gno=my_cdi) | Q(gno=my_jdi))
-    unique_members = {}
-    for member in family_members:
-        unique_members[member.member.id] = member.member.name  # 중복 제거
+            # 가족 구성원의 이름을 가져옵니다.
+            family_members = GroupDiary.objects.filter(gno=my_cdi)
+            unique_members = {}
+            for member in family_members:
+                unique_members[member.member.id] = member.member.name  # 중복 제거
 
-    # 내 이름을 가장 먼저 추가
-    my_name = qs.name  # 내 이름
-    data = [{'id': qs.id, 'name': my_name}]  # 내 이름을 먼저 추가
+            # 내 이름을 가장 먼저 추가
+            my_name = qs.name  # 내 이름
+            data = [{'id': qs.id, 'name': my_name}]  # 내 이름을 먼저 추가
 
-    # 내 이름을 제외한 나머지 가족 구성원들 추가
-    for member_id, name in unique_members.items():
-        if member_id != qs.id:
-            data.append({'id': member_id, 'name': name})
+            # 내 이름을 제외한 나머지 가족 구성원들 추가
+            for member_id, name in unique_members.items():
+                if member_id != qs.id:
+                    data.append({'id': member_id, 'name': name})
+        
+        # 가입된 그룹만 있을 때
+        elif qs.joined_group and qs.created_group == None:
+            my_jdi = qs.joined_group.gno
+            # 가족 구성원의 이름을 가져옵니다.
+            family_members = GroupDiary.objects.filter(gno=my_jdi)
+            unique_members = {}
+            for member in family_members:
+                unique_members[member.member.id] = member.member.name  # 중복 제거
+
+            # 내 이름을 가장 먼저 추가
+            my_name = qs.name  # 내 이름
+            data = [{'id': qs.id, 'name': my_name}]  # 내 이름을 먼저 추가
+
+            # 내 이름을 제외한 나머지 가족 구성원들 추가
+            for member_id, name in unique_members.items():
+                if member_id != qs.id:
+                    data.append({'id': member_id, 'name': name})
+    
+        # 둘 다 있을 때
+        else:
+            my_cdi = qs.created_group.gno
+            my_jdi = qs.joined_group.gno
+
+            # 가족 구성원의 이름을 가져옵니다.
+            family_members = GroupDiary.objects.filter(Q(gno=my_cdi) | Q(gno=my_jdi))
+            unique_members = {}
+            for member in family_members:
+                unique_members[member.member.id] = member.member.name  # 중복 제거
+
+            # 내 이름을 가장 먼저 추가
+            my_name = qs.name  # 내 이름
+            data = [{'id': qs.id, 'name': my_name}]  # 내 이름을 먼저 추가
+
+            # 내 이름을 제외한 나머지 가족 구성원들 추가
+            for member_id, name in unique_members.items():
+                if member_id != qs.id:
+                    data.append({'id': member_id, 'name': name})
 
     return JsonResponse(data, safe=False)
 

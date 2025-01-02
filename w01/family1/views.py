@@ -146,7 +146,7 @@ def fam(request):
 
     # 그룹 존재 여부 확인
     has_group = bool(created_group or joined_group)
-    qb = Img.objects.get(id=id)
+    qb = Img.objects.filter(id=id).first()
     # 컨텍스트 데이터 구성
     context = {
         'user':user,
