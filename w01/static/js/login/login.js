@@ -60,15 +60,23 @@ pw_input.addEventListener('blur', () => {
       loginerrorMessage2.style.display = 'none';
     }
   }
+});
 
 // 엔터 키 입력 감지
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    loginsubmitButton.click(); // 로그인 버튼 클릭 이벤트 실행
-  }
+// document.addEventListener('keydown', (event) => {
+//   if (event.key === 'Enter') {
+//     loginsubmitButton.click(); // 로그인 버튼 클릭 이벤트 실행
+//   }
+// });
+$(function() {
+  $(document).on('keypress', function(event){
+    if (event.key == 'Enter') {
+      console.log('키눌림')
+      loginsubmitButton.click(); // 로그인 버튼 클릭 이벤트 실행
+    }
+  });
 });
 
-});
 document.addEventListener("DOMContentLoaded", function() {
   const loginErrorMsgElement = document.getElementById('login_errorMessage3');
   if (loginErrorMsgElement) {

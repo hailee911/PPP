@@ -274,6 +274,8 @@
 						<button id="main_wbtn" type="button">+</button>
 						{% endif %}
 						<!-- 반복부분 -->
+
+						{% if not my_diary %}
 						<div id="dlist">
 							<a href="/diary/MdiaryList/">
 								<p class="dlist_type">My Diary</p>
@@ -283,6 +285,17 @@
 								</div>
 							</a>
 						</div>
+						{% else %}
+						<div id="dlist">
+							<a href="/diary/MdiaryList/">
+								<p class="dlist_type">My Diary</p>
+								<p class="dlist_title">{{my_diary.mtitle}}</p>
+								<div>
+									<p class="dlist_date">{{my_diary.mdate | date:"Y-m-d"}}<br>~</p>
+								</div>
+							</a>
+						</div>
+						{% endif %}
 
 						{% if my.created_group.gtitle %}
 						<div id="dlist">

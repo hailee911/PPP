@@ -3,6 +3,7 @@ from loginpage.models import Member
 from mypage.models import Img
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
+from django.db import IntegrityError
 
 
 @csrf_exempt
@@ -91,10 +92,32 @@ def pw_chg(request):
   print(qs.pw)
   return JsonResponse({'result': 'success'})
 
-
-# 회원 탈퇴
 def delaccount(request):
-  id = request.session['session_id']
-  qs = Member.objects.get(id=id)
-  qs.delete()
-  return redirect('/')
+    # 세션에서 현재 로그인한 회원의 ID 가져오기
+    id = request.session['session_id']
+
+    # 해당 회원 객체를 가져오기
+    try:
+        qs = Member.objects.get(id=id)
+        print('삭제 전 : ', qs)
+        
+        # 해당 회원과 관련된 데이터 삭제
+        qs.letter_set.all().delete()  # 우체통 데이터 삭제
+        qs.mdiaryboard_set.all().delete()  # 개인 다이어리 삭제
+        qs.groupdiary_set.all().delete()  # 그룹 다이어리 삭제
+        qs.content_set.all().delete()  # 다이어리 내용 삭제
+        qs.emotionscore_set.all().delete()  # 다이어리 내용 삭제
+        
+        # 마지막으로 회원 삭제
+        qs.delete()
+        print('삭제 후 : ', qs)
+        # 세션 삭제 후 홈페이지로 리다이렉트
+        del request.session['session_id']  # 세션 삭제
+        request.session.clear()
+        
+        # 세션 종료 후 홈페이지로 리다이렉트
+        return redirect('/')
+    except Member.DoesNotExist:
+        return redirect('/')  # 만약 해당 회원이 없으면 리다이렉트
+    except IntegrityError:
+        return redirect('/')  # 외래 키 제약 등으로 인한 오류 처리
