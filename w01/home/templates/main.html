@@ -11,7 +11,9 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <title>우리의 기록</title>
 <style>
-
+	.hidden_wbtn {
+		visibility: hidden; /* 보이지 않게 하지만 공간은 유지 */
+	}
 </style>
 
 
@@ -46,6 +48,7 @@
         ctitle = "{{Content.ctitle}}"
         cdate = "{{Content.cdate}}"
         ccontent = "{{Content.ccontent}}"
+        cno = "{{Content.cno}}"
         //ajax 구문
         $.ajax({
           headers:{"X-CSRFToken":$("meta[name='csrf-token']").attr("content")},
@@ -61,9 +64,12 @@
             var hdata = ""
             hdata += `<div id="search_result">검색 결과 <span>(${data.list_qs.length})</span></div>`
             for(var i=0;i<data.list_qs.length;i++){
-              hdata += `<div class="search_list"><a href="/diary/diaryView/">
+							// cdate를 Date 객체로 변환 > 0년0월0일로 형식 변환
+							var cdate = new Date(data.list_qs[i].cdate);  
+          		var formattedDate = cdate.getFullYear() + "년 " + (cdate.getMonth() + 1) + "월 " + cdate.getDate() + "일";
+              hdata += `<div class="search_list"><a href="/diary/diary_view/${data.list_qs[i].cno}/">
               <span class="s_title"> ${data.list_qs[i].ctitle}</span>
-                    <span class="s_date">${data.list_qs[i].cdate}</span>
+                    <span class="s_date">${formattedDate}</span>
                     <img src="/static/images/home/right.png" alt="">
                     </a>
                     </div>`
@@ -93,6 +99,20 @@
 			$('#n_overlay').removeClass('show');
 		});
 	});
+
+	function diaryWriteBtn() {
+			// 알림 메시지 표시
+			alert("일기를 작성하러 이동합니다!");
+
+			// 일기 작성 창으로 이동 (URL은 원하는 페이지로 변경)
+			window.location.href = "/diary/diaryWrite/";
+	}
+
+	function pastdiaryBtn() {
+
+			// 일기 작성 창으로 이동 (URL은 원하는 페이지로 변경)
+			window.location.href = "/diary/diary_view/{{past.cno}}/";
+	}
 
 
 </script>
@@ -135,7 +155,7 @@
 
 		<!-- logout -->
 		<div id="logout">
-			<a href="#"><span>로그아웃</span></a>
+			<a href="/main/logout/"><span>로그아웃</span></a>
 		</div>
 		
 	</div>
@@ -239,12 +259,16 @@
 						가족과 함께 소중한 추억의 한 페이지를 엮어 보세요.
 					</p>
 				</div>
-				<button type="button" onclick="" class="main_btn">일상 공유하기&nbsp&nbsp&nbsp></button>
+				<button type="button" onclick="diaryWriteBtn()" class="main_btn">일상 공유하기&nbsp&nbsp&nbsp></button>
 			</div>
 			
 			<div id="diary_list">
 				<div class="diary_list_wrapper">
+						{% if my.created_group and my.joined_group %}
+						<button id="main_wbtn" type="button" class='hidden_wbtn'>+</button>
+						{% else %}
 						<button id="main_wbtn" type="button">+</button>
+						{% endif %}
 						<!-- 반복부분 -->
 						<div id="dlist">
 							<a href="/diary/MdiaryList/">
@@ -417,31 +441,19 @@
 						<col style="width: 80px;">
 						<col style="width: 120px;">
 					</colgroup>
+					{% if daily_new == '공유 일기장을 만들어 보세요!' or daily_new == '공유 일기장에 공유된 일기가 없어요.' %}
 					<tr>
-						<th>지갑 잃어버렸다 찾은 날</th>
-						<td>배현지</td>
-						<td>2024.12.03</td>
+						<td colspan = '3' >{{daily_new}}</td>
 					</tr>
+					{% else %}
+					{% for new in daily_new %}
 					<tr>
-						<th>지갑 잃어버렸다 찾은 날</th>
-						<td>배현지</td>
-						<td>2024.12.03</td>
+						<th>{{new.ctitle}}</th>
+						<td>{{new.member.name}}</td>
+						<td>{{new.cdate | date:'y.m.d'}}</td>
 					</tr>
-					<tr>
-						<th>지갑 잃어버렸다 찾은 날</th>
-						<td>배현지</td>
-						<td>2024.12.03</td>
-					</tr>
-					<tr>
-						<th>지갑 잃어버렸다 찾은 날</th>
-						<td>배현지</td>
-						<td>2024.12.03</td>
-					</tr>
-					<tr>
-						<th>지갑 잃어버렸다 찾은 날</th>
-						<td>배현지</td>
-						<td>2024.12.03</td>
-					</tr>
+					{% endfor %}
+					{% endif %}
 				</table>
 			</div>
 
@@ -450,20 +462,28 @@
 					<p>과거의 오늘</p>
 				</div>
 				<div class="sub_t">
-					<span>1 년 전 오늘 다이어리에는 이런 내용이 있었어요.</span>
+					<span>1 년 전 오늘 내 다이어리에는 이런 내용이 있었어요.</span>
 				</div>
 				<div id="past_area">
+					{% if past %}
 					<div>
 						<p class="p_txt">
-							오늘만 정말 기다리고 기다렸다. 왜냐면 오늘 바로 바로 딤섬여왕 정지선셰프의 식당을 예약한 날이기 때문이다. 딤섬을 많이 먹으려고 점심도 조금 먹었는데 배가 너무 고파서 음식이 나올 때까지 기다리다가 기절할 뻔 했다. 드디어 첫 딤섬이 나왔는데.. 너무 맛있어서 소리를 질러 버렸다. 주변사람들한테 너무 민폐를 끼친거 같아 너무 부끄러웟따...... 그럼에도 불구하고 네버더레스 나는
+							{{past.ccontent}}
 						</p>
-						<span>
-							...
-						</span>
 					</div>
 					<div id="p_button">
-						<button type="button" onclick="" class="main_btn">더 보러가기&nbsp&nbsp&nbsp></button>
+						<button type="button" onclick="pastdiaryBtn()" class="main_btn" >더 보러가기&nbsp&nbsp&nbsp></button>
 					</div>
+					{% else %}
+					<div>
+						<p class="p_txt">
+							1 년 전 오늘에는 일기를 쓰지 않았어요.
+						</p>
+					</div>
+					<div id="p_button">
+						<button type="button" onclick=""  class="main_btn hidden_wbtn">더 보러가기&nbsp&nbsp&nbsp></button>
+					</div>
+					{% endif %}
 
 				</div>
 			</div>

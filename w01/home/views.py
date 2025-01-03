@@ -10,7 +10,8 @@ from django.http import JsonResponse,HttpResponse
 from django.db.models import Q, Sum, Count
 from datetime import datetime, timedelta
 from django.db.models.functions import Extract, TruncDate
-
+from datetime import timedelta
+from django.utils import timezone
 
 
 # 랜딩페이지
@@ -28,10 +29,43 @@ def main(request):
   # 내 다이어리
   my_diary = MdiaryBoard.objects.filter(id=id).first()
 
+  # 최신 일상들 
+  if qs.created_group == None and qs.joined_group == None:
+    daily_new = '공유 일기장을 만들어 보세요!'
+  else:
+    if qs.created_group and qs.joined_group == None:
+        groups = [qs.created_group]
+    elif qs.created_group == None and qs.joined_group:
+        groups = [qs.joined_group]
+    else:
+        groups = [qs.created_group, qs.joined_group]
+      
+    # 사용자가 작성한 글을 제외하고, 해당 그룹들의 콘텐츠를 최신순으로 가져옵니다.
+    daily_new = Content.objects.filter(
+        group_diary__in=groups  # 가입된 그룹 + 만든 그룹
+    ).exclude(member=qs)  # 사용자가 작성한 글 제외
+
+    daily_new = daily_new.distinct().order_by('-cdate')[:5]
+    if not daily_new.exists():
+        daily_new = '공유 일기장에 공유된 일기가 없어요.'
+
+  # 과거의 오늘
+  # 1년 전 오늘 날짜 계산
+  today = timezone.localtime(timezone.now()).date()
+  year_ago = today.replace(year=today.year - 1)
+
+  # 1년 전 오늘 날짜에 작성된 일기를 필터링
+  past = Content.objects.filter(
+      cdate__date=year_ago  # 1년 전 오늘 날짜와 같은 날짜의 일기만 가져오기
+    ).first()
+
   context = {'post_lists':qs_post,
               'my':qs, 
               'my_img':qb,
-              'my_diary':my_diary}
+              'my_diary':my_diary,
+              'daily_new':daily_new,
+              'past':past,
+              }
   return render(request, 'main.html', context)
 
 def logout(request):

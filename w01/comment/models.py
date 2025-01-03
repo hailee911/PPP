@@ -9,6 +9,7 @@ class Comment(models.Model):
     text = models.TextField()  # 댓글 내용
     created_at = models.DateTimeField(auto_now_add=True)  # 댓글 작성 시간
     updated_at = models.DateTimeField(auto_now=True)  # 댓글 수정 시간
+    group_num = models.IntegerField(null=True)  # 해당 다이어리의 group_num (created_group 또는 joined_group의 gno)
 
     def __str__(self):
         return f"{self.member.name} - {self.text[:20]}"

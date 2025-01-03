@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf_token" content="{{ csrf_token }}">
+  <meta name="csrf-token" content="{{ csrf_token }}">
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
 	<link rel="stylesheet" href="{% static 'css/main_navi_base.css'%}">
   <link rel="stylesheet" href="{% static 'css/customer/customer_service.css'%}">
@@ -18,44 +19,7 @@
   <title>우리의 기록</title>
 </head>
 <body>
-  <script>
-		$(function() {
-			// GNB 클릭
-			$('#menu ul li').on('click', function() {
-				$('#menu ul li').removeClass('active');
-				$(this).addClass('active');
-			});
-				// 검색창
-			$('#searchBtn').click(function(){
-				$("#main_search").removeClass('closed').addClass('open');
-				$('#s_overlay').addClass('show');
-				});
-			$('#search_closeBtn').click(function(){
-				$("#main_search").removeClass('open').addClass('closed');
-				$('#s_overlay').removeClass('show');
-				});
-			$('#s_overlay').click(function() { //배경 클릭하면 닫히게
-				$('#main_search').removeClass('open').addClass('closed');
-				$('#s_overlay').removeClass('show');
-				});
-
-
-			// 알림창
-			$('#notiBtn').click(function() {
-				$('#noti_side').removeClass('closed').addClass('open');
-				$('#n_overlay').addClass('show');
-				});
-			$('#noti_closeBtn').click(function() {
-				$('#noti_side').removeClass('open').addClass('closed');
-				$('#n_overlay').removeClass('show');
-				});
-			$('#n_overlay').click(function() { //배경 클릭하면 닫히게
-				$('#noti_side').removeClass('open').addClass('closed');
-				$('#n_overlay').removeClass('show');
-				});
-		});
-
-	</script>
+  
 </head>
 <body>
 	<!-- 최상단 메뉴 -->
@@ -89,82 +53,31 @@
 	<div id="s_overlay" class="s_overlay"></div>
 	<div id="main_search" class="search_bar closed">
 		<div id="input_wrap">
-			<div class="search_box">
-				<input type="text" placeholder="다이어리에서 찾고 싶은 내용을 입력하세요.">
-				<img src="/static/images/home/search_icon.png" alt="">
-			</div>
-			<button type="button" id="search_closeBtn">
-				<img src="/static/images/home/close_icon.png" alt="알림창닫기">
-			</button>
+			<form action="/main/search/" method="POST" name="searchFrm" id="searchFrm">
+				<div class="search_box">
+					{% csrf_token %}
+					<input type="text" id="csearch" name='csearch' placeholder="다이어리에서 찾고 싶은 내용을 입력하세요.">
+					<img src="/static/images/home/search_icon.png" alt="">
+				</div>
+			</form>
+				<button type="button" id="search_closeBtn">
+					<img src="/static/images/home/close_icon.png" alt="알림창닫기">
+				</button>
 		</div>
-		
 		<div id="search_content">
 			<div id="search_result">
-				검색 결과 <span>(4)</span>
+				검색 결과 <span>(0)</span>
 			</div>
-			<!-- 반복 -->
 			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
+				<a>
+					<span class="s_title">찾고자 하는 일기를 검색해 보세요.</span>
+					<span class="s_date"></span>
 					<img src="/static/images/home/right.png" alt="">
 				</a>
 			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<div class="search_list">
-				<a href="">
-					<span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-					<span class="s_date">2024.12.05</span>
-					<img src="/static/images/home/right.png" alt="">
-				</a>
-			</div>
-			<!-- 반복 -->
-			
 		</div>
-		
-		
 	</div>
+
 	
 	
 	<!-- 알림창 슬라이드 -->
@@ -221,5 +134,88 @@
 	<!-- container -->
 	{% block container-block%}
 	{% endblock container-block%}
+
+	<script>
+		$(function() {
+			// GNB 클릭
+			$('#menu ul li').on('click', function() {
+				$('#menu ul li').removeClass('active');
+				$(this).addClass('active');
+			});
+				// 검색창
+			$('#searchBtn').click(function(){
+				$("#main_search").removeClass('closed').addClass('open');
+				$('#s_overlay').addClass('show');
+				});
+			$('#search_closeBtn').click(function(){
+				$("#main_search").removeClass('open').addClass('closed');
+				$('#s_overlay').removeClass('show');
+				});
+			$('#s_overlay').click(function() { //배경 클릭하면 닫히게
+				$('#main_search').removeClass('open').addClass('closed');
+				$('#s_overlay').removeClass('show');
+				});
+
+
+			// 알림창
+			$('#notiBtn').click(function() {
+				$('#noti_side').removeClass('closed').addClass('open');
+				$('#n_overlay').addClass('show');
+				});
+			$('#noti_closeBtn').click(function() {
+				$('#noti_side').removeClass('open').addClass('closed');
+				$('#n_overlay').removeClass('show');
+				});
+			$('#n_overlay').click(function() { //배경 클릭하면 닫히게
+				$('#noti_side').removeClass('open').addClass('closed');
+				$('#n_overlay').removeClass('show');
+				});
+		});
+
+		// 검색창 검색기능
+    $('.search_box input').on('keypress', function(event){
+      if (event.key == 'Enter') {
+				// 입력값과 일치하는 일기 찾기
+        alert("데이터가 검색되었습니다.")
+        ctitle = "{{Content.ctitle}}"
+        cdate = "{{Content.cdate}}"
+        ccontent = "{{Content.ccontent}}"
+        cno = "{{Content.cno}}"
+        //ajax 구문
+        $.ajax({
+					headers:{"X-CSRFToken":$("meta[name='csrf-token']").attr("content")},
+          url:"/main/search/",
+          type:"post",
+          data:{"csearch":$("#csearch").val()}, //views.py데이터 보냄
+          success:function(data){
+						//data -> 넘어온 검색결과
+            console.log("리스트 : "+data.list_qs)
+            console.log("리스트 : "+data.list_qs[0])
+            console.log("리스트개수 : "+data.list_qs.length)
+            //html보내는 부분
+            var hdata = ""
+            hdata += `<div id="search_result">검색 결과 <span>(${data.list_qs.length})</span></div>`
+            for(var i=0;i<data.list_qs.length;i++){
+							// cdate를 Date 객체로 변환 > 0년0월0일로 형식 변환
+							var cdate = new Date(data.list_qs[i].cdate);  
+          		var formattedDate = cdate.getFullYear() + "년 " + (cdate.getMonth() + 1) + "월 " + cdate.getDate() + "일";
+              hdata += `<div class="search_list"><a href="/diary/diary_view/${data.list_qs[i].cno}/">
+								<span class="s_title"> ${data.list_qs[i].ctitle}</span>
+								<span class="s_date">${formattedDate}</span>
+								<img src="/static/images/home/right.png" alt="">
+								</a>
+								</div>`
+							}
+							$("#search_content").html(hdata)
+						},
+						error:function(){
+							alert("에러")
+						}
+					})
+				}
+				event.preventDefault(); // 기본 제출 방지
+    });
+
+	</script>
 </body>
 </html>

@@ -276,7 +276,7 @@
         <div class="diary_member">
           <p>
             {% if creator %}
-              {{ request.session.session_name }}
+              {{ pDiary.id.name }}
               {% if joined_members %}
                 {% for joined_member in joined_members %}
                 , {{ joined_member.member.name }}
@@ -306,7 +306,7 @@
           </div>
         </div>
         <div class="diary_member">
-          <p>{{ request.session.session_name }}</p>
+          <p>{{ pDiary.id.name }}</p>
         </div>
         <div class="diary_date">
           <p>{{pDiary.mdate|date:"Y.m.d"}} ~</p>

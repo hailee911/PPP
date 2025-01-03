@@ -51,7 +51,7 @@
           <div class="id1_error-message" id="id1_errorMessage2">생년월일을 입력해주세요.</div>
         </div>
         <div id="id_input_bir">
-          <input type="text" id="id1_birthday" name="birthday" class="id_input" placeholder="예) 1999-11-22" value="{{ birthday|default:'' }}">
+          <input type="date" id="id1_birthday" name="birthday" class="id_input" placeholder="예) 1999-11-22" value="{{ birthday|default:'' }}">
         </div>
         {% if messages %}
         {% for message in messages %}

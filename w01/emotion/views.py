@@ -19,6 +19,19 @@ from vertexai.generative_models import GenerativeModel, Part, SafetySetting
 import vertexai
 from django.conf import settings
 
+
+# 검색창
+def search(request):
+  id = request.session['session_id']
+  csearch = request.POST.get("csearch")
+  print("csearch : ",csearch)
+  member = Member.objects.get(id=id)
+  qs = list(Content.objects.filter(Q(member=member,ctitle__contains=csearch)|Q(member=member,ccontent__contains=csearch) ).values())
+  print("qs : ",qs)
+  context = {"list_qs":qs}
+  return JsonResponse(context)
+
+
 def save_content_to_txt():
     # Content 모델에서 모든 게시글 가져오기
     contents = Content.objects.all()

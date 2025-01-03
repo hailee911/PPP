@@ -150,8 +150,8 @@ def cal(request):
     return redirect(f'/calendar1/cal/')
   else:
     id = request.session.get('session_id')
-    user = Member.objects.filter(id=id).first()
-    qb = Img.objects.filter(id=id).first()
+    user = Member.objects.get(id=id)
+    qb = Img.objects.get(id=id)
     context = {'user': user, 'qb':qb}
 
     # GroupDiary에서 Member 객체 추출

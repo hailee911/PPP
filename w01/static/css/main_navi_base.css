@@ -137,29 +137,32 @@ box-sizing: border-box;
 
 /* 검색창 슬라이드 */
 .search_bar {
-	position: fixed;
-	top: 0;
-	top: -950px;
-	width: 100%;
-	height: 600px;
-	margin-top: 60px;
-	box-sizing: border-box;
-	background-color: white;
-	box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-	overflow-x: auto;
-	transition: right 0.3s ease-in-out;
-	z-index: 1000;
+  position: fixed;
+  top: 0;
+  top: -950px;
+  width: 100%;
+  height: 600px;
+  margin-top: 60px;
+  box-sizing: border-box;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  transition: top 0.3s ease-in-out;
+  z-index: 1000;
 }
 .search_bar.closed {
-	top: -950px;
+  top: -950px;
 }
 .search_bar.open {
-	top: 0; 
+  top: 0;
 }
 #input_wrap{
-	display: flex;
+  display: flex;
 }
-
+#searchFrm{
+  margin: 0 auto;
+  display: flex;
+}
 .search_box {
   display: flex;
   align-items: center;
@@ -167,59 +170,54 @@ box-sizing: border-box;
   border-radius: 50px;
   padding: 5px 14px;
   width: 600px;
-	height: 48px;
-	margin: 40px auto;
-	box-sizing: border-box;
-  background-color: #f9f9f9;
+  height: 48px;
+  margin: 40px auto 20px;
+  box-sizing: border-box;
+  background-color: #F9F9F9;
 }
-
 .search_box input {
   border: none;
   outline: none;
   flex-grow: 1;
-  font-size: 14px;
+  font-size: 15px;
   background: transparent;
 }
 #search_closeBtn  {
   border: none;
-	background: #fff;
-	width: 24px;
-	height: 24px;
-	position: relative;
-	top: 52px;
-	left: -50px;
-	cursor: pointer;
+  background: #fff;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  top: 52px;
+  left: -50px;
+  cursor: pointer;
 }
-
 .search_box input::placeholder {
   color: #aaa;
 }
 #search_content{
-	width: 1000px;
-	margin: 0 auto 60px;
-	/* border: 1px solid black; */
+  width: 1000px;
+  margin: 0 auto 60px;
+  /* border: 1px solid black; */
 }
-
 #search_result{
-	padding: 20px;
-	box-sizing: border-box;
-	height: 64px;
-	font-size: 20px;
-	font-weight: 400;
-	border-bottom: 1px solid #dfdfdf;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 64px;
+  font-size: 20px;
+  font-weight: 400;
+  border-bottom: 1px solid #DFDFDF;
 }
-
 .search_list{
-	width: 100%;
-	height: 60px;
-	border-bottom: 1px solid #dfdfdf;
-	font-size: 17px;
-	padding: 20px;
-	box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid #DFDFDF;
+  font-size: 17px;
+  padding: 20px;
+  box-sizing: border-box;
 }
-
 .search_list a{
-	display: flex;
+  display: flex;
   align-items: center;
 }
 

@@ -111,11 +111,14 @@ button:hover {
   align-items: center;
   margin-bottom: 30px;
 }
+#remember{
+  margin-right: 5px;
+}
 .checkbox div{
   font-size: 13px;
   cursor: pointer;
   color: #666666;
-  margin-left: 70px;
+  margin-left: 65px;
   text-align: right;
   display: flex;
   cursor: pointer;

@@ -309,8 +309,13 @@ def diary_view(request,cno):
 		# 현재 페이지 번호 가져오기
 		pageNum = int(request.GET.get('pageNum', 1))
 
-		# 댓글 데이터 가져오기 (시간순 정렬)
+		# 댓글을 불러올 때, 댓글에 설정된 group_num을 기준으로 필터링
 		comments = Comment.objects.filter(content=current_post[0]).order_by('-created_at')
+
+		# 사용자가 볼 수 있는 댓글만 필터링
+		visible_comments = []
+		for comment in comments:
+			visible_comments.append(comment)
 
 		context = {
 				'cont': current_post[0],
@@ -323,6 +328,8 @@ def diary_view(request,cno):
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 				'qb':qb,                            # 프사
 				'member':member,                           # 내정보
+				'comments': visible_comments,             # 댓글 리스트
+				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 		}
 		return render(request,'diary_view.html',context,)
 
@@ -361,8 +368,15 @@ def Cdiary_view(request,cno):
 		# 현재 페이지 번호 가져오기
 		pageNum = int(request.GET.get('pageNum', 1))
 
-		# 댓글 데이터 가져오기 (시간순 정렬)
+		# 댓글을 불러올 때, 댓글에 설정된 group_num을 기준으로 필터링
 		comments = Comment.objects.filter(content=current_post[0]).order_by('-created_at')
+
+		# 사용자가 볼 수 있는 댓글만 필터링
+		visible_comments = []
+		for comment in comments:
+				# 사용자가 댓글을 볼 수 있는 조건
+				if comment.group_num == member.created_group.gno:
+						visible_comments.append(comment)
 
 		context = {
 				'cont': current_post[0],
@@ -375,6 +389,8 @@ def Cdiary_view(request,cno):
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 				'qb':qb,
 				'member':member,
+				'comments': visible_comments,             # 댓글 리스트
+				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 		}
 		return render(request,'diary_view.html',context,)
 
@@ -412,8 +428,15 @@ def Jdiary_view(request,cno):
 		# 현재 페이지 번호 가져오기
 		pageNum = int(request.GET.get('pageNum', 1))
 
-		# 댓글 데이터 가져오기 (시간순 정렬)
+		# 댓글을 불러올 때, 댓글에 설정된 group_num을 기준으로 필터링
 		comments = Comment.objects.filter(content=current_post[0]).order_by('-created_at')
+
+		# 사용자가 볼 수 있는 댓글만 필터링
+		visible_comments = []
+		for comment in comments:
+				# 사용자가 댓글을 볼 수 있는 조건
+				if comment.group_num == member.joined_group.gno:
+						visible_comments.append(comment)
 
 		context = {
 				'cont': current_post[0],
@@ -426,6 +449,8 @@ def Jdiary_view(request,cno):
 				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 				'qb':qb,
 				'member':member,
+				'comments': visible_comments,             # 댓글 리스트
+				'comment_success': request.GET.get('comment_success', False),  # 댓글 등록 성공 여부
 		}
 		return render(request,'diary_view.html',context,)
 

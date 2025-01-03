@@ -103,85 +103,33 @@
   </div>
 
   <!-- 검색창 슬라이드 -->
-  <div id="s_overlay" class="s_overlay"></div>
-  <div id="main_search" class="search_bar closed">
-    <div id="input_wrap">
-      <div class="search_box">
-        <input type="text" placeholder="다이어리에서 찾고 싶은 내용을 입력하세요.">
-        <img src="/static/images/home/search_icon.png" alt="">
-      </div>
-      <button type="button" id="search_closeBtn">
-        <img src="/static/images/home/close_icon.png" alt="알림창닫기">
-      </button>
-    </div>
-    
-    <div id="search_content">
-      <div id="search_result">
-        검색 결과 <span>(4)</span>
-      </div>
-      <!-- 반복 -->
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <div class="search_list">
-        <a href="">
-          <span class="s_title">검색어가 들어간 기록의 제목이 들어가는 부분</span>
-          <span class="s_date">2024.12.05</span>
-          <img src="/static/images/home/right.png" alt="">
-        </a>
-      </div>
-      <!-- 반복 -->
-      
-    </div>
-    
-    
-  </div>
+	<div id="s_overlay" class="s_overlay"></div>
+	<div id="main_search" class="search_bar closed">
+		<div id="input_wrap">
+			<form action="/main/search/" method="POST" name="searchFrm" id="searchFrm">
+				<div class="search_box">
+					{% csrf_token %}
+					<input type="text" id="csearch" placeholder="다이어리에서 찾고 싶은 내용을 입력하세요.">
+					<img src="/static/images/home/search_icon.png" alt="">
+				</div>
+			</form>
+				<button type="button" id="search_closeBtn">
+					<img src="/static/images/home/close_icon.png" alt="알림창닫기">
+				</button>
+		</div>
+			<div id="search_content">
+				<div id="search_result">
+					검색 결과 <span>(0)</span>
+				</div>
+				<div class="search_list">
+					<a>
+						<span class="s_title">찾고자 하는 일기를 검색해 보세요.</span>
+						<span class="s_date"></span>
+						<img src="/static/images/home/right.png" alt="">
+					</a>
+				</div>
+			</div>
+		</div>
 
 
   <!-- 알림창 슬라이드 -->
@@ -246,8 +194,8 @@
   <div id='calendar'>
   </div>
 
-  <!-- modal -->
-  <div id="myModal" class="modal">
+   <!-- modal -->
+   <div id="myModal" class="modal">
     <div class="modal-content">
       <form method="POST">
         {% csrf_token %}
