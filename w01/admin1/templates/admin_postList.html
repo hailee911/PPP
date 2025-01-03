@@ -8,6 +8,62 @@
 		<link rel="stylesheet" href="{% static 'css/admin1/admin_login.css'%}">
 		<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<title>포스트</title>
+
+		<style>
+			/* 기본 슬라이드 스타일 */
+				.switch {
+					position: relative;
+					display: inline-block;
+					width: 60px;
+					height: 34px;
+				}
+		
+				.switch input {
+					opacity: 0;
+					width: 0;
+					height: 0;
+				}
+		
+				.slider {
+					position: absolute;
+					cursor: pointer;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background-color: #ccc;
+					transition: 0.4s;
+					border-radius: 34px;
+				}
+		
+				.slider:before {
+					position: absolute;
+					content: "";
+					height: 26px;
+					width: 26px;
+					border-radius: 50%;
+					left: 4px;
+					bottom: 4px;
+					background-color: white;
+					transition: 0.4s;
+				}
+		
+				input:checked + .slider {
+					background-color: #4CAF50;
+				}
+		
+				input:checked + .slider:before {
+					transform: translateX(26px);
+				}
+		
+				/* 상태 텍스트 추가 */
+				.status-text {
+					display: inline-block;
+					margin-left: 10px;
+					font-size: 16px;
+				}
+		</style>
+
 		<script>
 			if('{{request.session.session_role}}'=='1'){
 				alert("접근 권한이 없습니다.")
@@ -130,7 +186,13 @@
 					<td class="member_name"><a href="/admin1/admin_postView/{{post.bno}}/">{{post.btitle}}</a></td>
 					<td>{{post.member.name}}</td>
 					<td>{{post.bdate|date:'y-m-d H:i:s'}}</td>
-					<td>게시 중</td>
+					<td>
+						<label class="switch">
+							<input type="checkbox" class="toggleStatus" {% if post.status == '게시중' %}checked{% endif %}>
+							<span class="slider"></span>
+						</label>
+						<span class="status-text">{{ post.status }}</span> <!-- 상태 텍스트 -->
+					</td>
 				</tr>
 				{% empty %}
     		<tr>
@@ -141,6 +203,53 @@
 			</tbody>
 		</table>
 	</div>
+
+	<script>
+
+		// 게시중 게시안함
+		document.querySelectorAll(".toggleStatus").forEach(toggle => {
+			toggle.addEventListener("change", function () {
+					const row = this.closest("tr"); // 현재 행 가져오기
+					const statusText = row.querySelector(".status-text");
+					const status = this.checked ? "게시중" : "게시안함";
+					
+					// 상태 텍스트 갱신
+					if (statusText) {
+							statusText.textContent = status;
+					} else {
+							console.error("status-text 요소를 찾을 수 없습니다.");
+					}
+	
+					// 해당 게시글 번호(bno) 추출
+					const bno = row.querySelector(".member_name a").getAttribute("href").split("/").filter(Boolean).pop();
+					
+					// AJAX로 서버에 상태 변경 요청 보내기
+					fetch('/admin1/admin_noticeList/status_chg/', {
+							method: 'POST',
+							headers: {
+									'Content-Type': 'application/json',
+									'X-CSRFToken': '{{ csrf_token }}',
+							},
+							body: JSON.stringify({
+									status: status,
+									bno: bno
+							})
+					})
+					.then(response => response.json())
+					.then(data => {
+							if (!data.success) {
+									alert("상태 업데이트 실패");
+							}
+					})
+					.catch(error => {
+							console.error("Error:", error);
+							alert("상태 업데이트 중 오류가 발생했습니다.");
+					});
+			});
+		});
+
+
+	</script>
 
 </body>
 </html>

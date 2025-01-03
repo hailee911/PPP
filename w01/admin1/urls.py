@@ -39,6 +39,8 @@ urlpatterns = [
 
 	# 포스트리스트
     path('admin_postList/', views.admin_postList, name="admin_postList"),
+    # 공지사항 상태 변경
+    path('admin_postList/status_chg/', views.admin_postList2, name="admin_postList2"),
 	# 포스트쓰기
     path('admin_postWrite/', views.admin_postWrite, name="admin_postWrite"),
 	# 포스트 보기

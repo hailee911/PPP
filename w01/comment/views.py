@@ -47,10 +47,14 @@ def add_comment(request, cno):
 				group_num = group_num,
 			)
 
+			if group_num == member.created_group.gno:
+				link = 'Cdiary_view'
+			elif group_num == member.joined_group.gno: 
+				link = 'Jdiary_view'
 		# 댓글 작성 후 원래 페이지로 리다이렉트
 		# 저장 후 페이지 새로고침
 		# 댓글 작성 후 원래 게시글 페이지로 리다이렉트, comment_success 파라미터 추가
-		return redirect(reverse('diary:diary_view', kwargs={'cno': cno}) + '?comment_success=true')
+		return redirect(reverse(f'diary:{link}', kwargs={'cno': cno}) + '?comment_success=true')
 
 # comment/views.py
 from django.http import JsonResponse

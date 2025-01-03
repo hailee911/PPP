@@ -10,7 +10,7 @@ def main(request):
     mem = Member.objects.filter(id = request.session['session_id'])
     qb = Img.objects.filter(id=request.session['session_id']).first()
     qs = NoticeBoard.objects.filter(category=1, status='게시중').order_by('-bno')[:5]
-    qs_post = NoticeBoard.objects.filter(category=2).order_by('-bno')
+    qs_post = NoticeBoard.objects.filter(category=2, status='게시중').order_by('-bno')
     context = {'notice_5':qs, 'mem_info':mem[0], 'post_lists':qs_post, 'qb':qb}
 
   # 1:1 문의 작성하기 버튼 눌렀을 때

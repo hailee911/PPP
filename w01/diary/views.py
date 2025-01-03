@@ -37,10 +37,8 @@ def diaryHome(request):
 		qs_joinedMem = GroupDiary.objects.filter(gno=qs_createdDiary[0].gno, role=2)
 		if qs_joinedMem:
 			c_context = {"creator":qs_createdDiary[0], "user_name":name, "joined_members":qs_joinedMem}
-			print("있음",c_context)
 		else:
 			c_context = {"creator":qs_createdDiary[0], "user_name":name,}
-			print("없음",c_context)
 	
 
 	# 2. 유저가 가입한 공유일기장

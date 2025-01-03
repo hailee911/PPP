@@ -21,6 +21,7 @@ ol, ul {
 	background: #fff;
 	border-bottom: 1px solid #E9E9E9;
 	position: fixed;
+	z-index: 2;
 }
 
 #gnb {

@@ -12,7 +12,7 @@ class NoticeBoard(models.Model):
   member = models.ForeignKey(Administrator,on_delete=models.SET_NULL, null=True)
   btitle = models.CharField(max_length=1000)
   bcontent = models.TextField()
-  bdate = models.DateTimeField(auto_now=True)
+  bdate = models.DateTimeField(auto_now_add=True)
 
   # img파일 업로드
   bfile = models.ImageField(null=True, blank=True, upload_to='uploads/')

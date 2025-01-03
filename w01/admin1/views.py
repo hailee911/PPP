@@ -283,6 +283,19 @@ def admin_postList(request):
 	context = {"postList":qs}
 	return render(request, 'admin_postList.html', context)
 
+def admin_postList2(request):
+	# 요청에서 데이터 가져오기
+	data = json.loads(request.body)
+	status = data.get('status')
+	bno = data.get('bno')
+
+	# bno로 객체 조회 및 상태 업데이트
+	qs = NoticeBoard.objects.get(bno=bno)
+	qs.status = status
+	qs.save()
+
+	return JsonResponse({'success': True})
+
 
 # 포스트 쓰기
 def admin_postWrite(request):
@@ -296,7 +309,7 @@ def admin_postWrite(request):
 		bfile = request.FILES.get('bfile','')
 		bfile_thumbnail = request.FILES.get('bfile_thumbnail','')
 		category = 2
-		NoticeBoard.objects.create(member=member,btitle=btitle,bcontent=bcontent,bfile_thumbnail=bfile_thumbnail,bfile=bfile,category=category)
+		NoticeBoard.objects.create(member=member,btitle=btitle,bcontent=bcontent,bfile_thumbnail=bfile_thumbnail,bfile=bfile,category=category, status='게시안함')
 		context = {'wmsg':'1'}
 		return render(request, 'admin_postList.html', context)
 

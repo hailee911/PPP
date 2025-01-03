@@ -27,7 +27,7 @@ table, tr, td{
 #container{
   width: 100%;
   min-height: 100vh; /* 화면 높이와 동일하게 설정 */
-  padding: 100px 180px 300px 334px;
+  padding: 100px 180px 150px 334px;
   /* padding: 60px 300px 0 300px; */
 }
 
