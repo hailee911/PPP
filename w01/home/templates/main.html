@@ -109,9 +109,13 @@
 	}
 
 	function pastdiaryBtn() {
-
 			// 일기 작성 창으로 이동 (URL은 원하는 페이지로 변경)
 			window.location.href = "/diary/diary_view/{{past.cno}}/";
+	}
+
+	function family_Btn() {
+			// 일기 작성 창으로 이동 (URL은 원하는 페이지로 변경)
+			window.location.href = "/family1/fam/";
 	}
 
 
@@ -418,7 +422,7 @@
 						<br>
 						<br>
 					</p>
-					<button type="button" onclick="" class="main_btn">자세히 보기&nbsp&nbsp&nbsp></button>
+					<button type="button" onclick="family_Btn()" class="main_btn">자세히 보기&nbsp&nbsp&nbsp></button>
 				</div>
 				<div id="happy_graph">
 					<div id="family-members"></div>

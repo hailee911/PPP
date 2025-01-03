@@ -42,8 +42,9 @@
       <div class="how_dairy">
         {% if post_lists %}
           {% for post in post_lists %}
-          <div class="slider-item" style="background-image: url('{{ post.bfile_thumbnail.url }}'); background-size: cover; background-position: center;">
-          </div>
+          <a href="/customer/noticeview/{{post.bno}}/">
+            <div class="slider-item" style="background-image: url('{{ post.bfile_thumbnail.url }}'); background-size: cover; background-position: center;"></div>
+          </a>
           {% endfor %}
         {% else %}
         <div class="slider-item">

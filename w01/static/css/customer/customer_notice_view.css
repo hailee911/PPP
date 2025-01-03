@@ -36,6 +36,7 @@ table, tr, td{
 
 #customer_notice_menu span{
   color:#797979; 
+
 }
 
 
@@ -57,7 +58,7 @@ table, tr, td{
 }
 
 .customer_view_title h2{
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 17px;
 }
 
@@ -72,6 +73,7 @@ table, tr, td{
 /* 일기내용 */
 #customer_content{
   width: 100%;
+  margin-bottom: 100px;
 }
 
 #customer_content p{
@@ -80,7 +82,7 @@ table, tr, td{
 }
 
 #customer_content img{
-  width: 50%;
+  width: 30%;
   margin: 0 auto;
   display: block;
 }
@@ -102,6 +104,17 @@ table, tr, td{
   border-radius: 50px;
   text-align: center;
   padding-top: 7px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.customer_react .back_write{
+  width: 190px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  text-align: center;
+  padding-top: 11px;
   margin-right: 5px;
   cursor: pointer;
 }
